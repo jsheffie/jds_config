@@ -1,3 +1,7 @@
+.claude/
+*.plist
+BetterTouchTool/btt_user_variables.plist
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

@@ -1,0 +1,600 @@
+{
+  "BTTPresetCreatorNotes" : "",
+  "BTTPresetInfoURL" : "",
+  "BTTPresetName" : "Default",
+  "BTTPresetColor" : "34.975800, 194.310000, 111.987330, 255.000000",
+  "BTTGeneralSettings" : {
+    "BTTShowBTTWhenControlStripHidden" : true,
+    "BSTTopMissionControlTreshold" : 34,
+    "BTTNotchBarNotchWidgetModeShowMiniMenubar" : true,
+    "BTTDrawingAreaWidth" : 915,
+    "BSTLeftHalfBlock" : true,
+    "showMagicMouseTab" : true,
+    "BSTRightHalfBlock" : true,
+    "BSTSnapAreaDefaultHighlightColor" : "92.625563, 122.647995, 161.664347, 56.100000",
+    "BTTCMOnTop" : true,
+    "BTTFreeSpaceAfterBTT" : 20,
+    "BTTShowControlStrip" : true,
+    "disableScrollingIf3" : true,
+    "BSTMemorySaver" : true,
+    "BTTCopyImgurURLToClipboard" : true,
+    "BSTSnapAreaDefaultPictoDistanceFromLeft" : 0.10000000000000001,
+    "snapBottomRight" : true,
+    "BTTTouchBarAnimateGroups" : true,
+    "BTTNotchBarNotchMenubarModeHideRightScrollable" : true,
+    "BTTEnableUsageLogging" : true,
+    "BTTForcedHidden" : false,
+    "SIRIMouseSpeed" : 1,
+    "BTTForceNormalClickPressure" : 150,
+    "BTTForceForceClickPressure4F" : 650,
+    "SIRIScrollSpeed" : 1,
+    "BTTTouchBarFontSize" : 15,
+    "BTTNotchBarNotchWidgetModeHideLeftFixed" : false,
+    "BTTTouchBarHapticFeedbackRelease" : 0,
+    "SHOWEDHIDEMENUBARWARNING" : true,
+    "disableScrollingIf2" : true,
+    "BTTConvertedDevices" : true,
+    "tpThreeFingerDoubleTapDelay" : 0.5,
+    "BTTNoShortcutDelay" : true,
+    "BTTStageManagerIncrease" : true,
+    "BTTStageManagerLeaveGapEvenIfHiding" : false,
+    "BSTSnapAreaDefaultDashedBorder" : false,
+    "BTTAllowThumbIfAllFingersArePlacedSimultaneously" : true,
+    "BTTNotchBarNotchMenubarModeShowOriginalStatusIcons" : true,
+    "showDrawingsTab" : true,
+    "BTTTouchBarVisible" : false,
+    "BSTDontShowSnapAreasWhileModMoving" : 0,
+    "BTTDrawingAreaHeight" : 626,
+    "BTTNumberOfStarts" : 123,
+    "BTTTouchBarHapticFeedback" : 0,
+    "BTTStageManagerLeftSnappingAreaIncreasePercentage" : 0.125,
+    "showKeyboardTab" : true,
+    "BTTHTTPServerPort" : 63362,
+    "snapBottomLeft" : true,
+    "BSTSnapAreaDefaultInvisible" : false,
+    "BTTDrawingRightMouse" : true,
+    "BTTMovePastedToTop" : true,
+    "BTTNotchBarStandardWidgetModeHideLeftFixed" : false,
+    "BSTWindowGrabPosX" : 67,
+    "BSTCornerRoundness" : 40,
+    "BTTForceNormalClickPressure5F" : 200,
+    "BTTNotchBarStandardMenubarModeHideLeftFixed" : true,
+    "BSTSnapAreaDefaultAnimationDuration" : 0.29999999999999999,
+    "showBTTRemoteTab" : true,
+    "BTTForceForceClickPressure3F" : 700,
+    "BTTHideFomControlStripWhenOpen" : false,
+    "mmZoomRepeatDelay" : 0.10000000000000001,
+    "BTTDefaultTBIconWidth" : 22,
+    "BTTTiltWheelDelay" : 0.45000000000000001,
+    "BTTNotchBarNotchWidgetModeShowOriginalStatusIcons" : false,
+    "BTTNotchBarNotchMenubarModeHideLeftScrollable" : true,
+    "BTTNotchBarNotchWidgetModeHideRightFixed" : false,
+    "showSiriRemoteTab" : true,
+    "BTTNotchBarStandardMenubarModeHideRightScrollable" : false,
+    "BTTIMGURDefault" : true,
+    "batteryWarning" : false,
+    "BTTNotchBarNotchMenubarModeHideLeftFixed" : true,
+    "BTTNotchBarShowOnStandardScreens" : true,
+    "BTTNotchBarStandardWidgetModeHideLeftScrollable" : false,
+    "BTTDismissIfNothingToShow" : true,
+    "BTTTouchBarMouseModeClickBlock" : true,
+    "snapTopLeft" : true,
+    "BTTForceNormalClickPressure4F" : 175,
+    "BTTMinDrawingMovement" : 2,
+    "snapTopRight" : true,
+    "BSTEnableEnhancementCheck" : true,
+    "BSTSnapAreaDefaultBorderWidth" : 3,
+    "BTTPathSampleSize" : 100,
+    "BSTSnapAreaDefaultBorderColor" : "0.000000, 0.000000, 0.000000, 255.000000",
+    "BSTSnapAreaDefaultCornerRadius" : 20,
+    "twoFingerDoubleTapDelay" : 0.5,
+    "BSTMoveTreshold" : 2,
+    "BTTStageManagerIncreaseEvenIfHiding" : true,
+    "BTTLastClamshellState" : true,
+    "BTTTwoFingerTipTapMinSpread" : 0.029999999999999999,
+    "showTouchBarTab" : false,
+    "BTTNotchBarNotchWidgetModeHideLeftScrollable" : false,
+    "BTTForceForceHapticResponse" : 13,
+    "BSTSnapAreaDefaultPictoSize" : 0.69999999999999996,
+    "cornerSnap" : true,
+    "BSTWindowGrabPosY" : 10,
+    "BTTForceNormalClickPressure3F" : 150,
+    "BTTNotchBarStandardWidgetModeHideRightFixed" : false,
+    "BTTTouchBarSupportEnabled" : false,
+    "BTTForceForceClickPressure2F" : 700,
+    "useAppleRemotePlugin" : false,
+    "BTRMouseSpeed" : 1,
+    "BTTUseNewUI" : true,
+    "BTTTouchBarKeepIconRatio" : true,
+    "BTTForceNormalHapticResponse" : 12,
+    "BTTFilterMagicMouseLeftRightEdge" : true,
+    "BSTBrokenAPICheckDelay" : 0.20000000000000001,
+    "BTTDefaultTBIconHeight" : 22,
+    "BTTDrawingStrokeWidth" : 4,
+    "BTTSelectedKeyboardTabIndex" : 0,
+    "BTRScrollSpeed" : 1,
+    "BTTMaxAllowedDrawingRotation" : 30,
+    "BTTTpFourFingerSwipeSensitivity" : 0.40000000000000002,
+    "BTTForceForceClickPressure" : 700,
+    "BTTEnablePalmRecognition" : true,
+    "BTTStageManagerLeftGapAbsolute" : false,
+    "BTTDontRestartAfterSleep" : true,
+    "BTTNotchBarStandardWidgetModeShowOriginalStatusIcons" : false,
+    "BTTForceNormalClickPressure2F" : 140,
+    "BTTThreeFingerTipTapMinSpread" : 0.029999999999999999,
+    "BTTNotchBarStandardMenubarModeHideLeftScrollable" : true,
+    "BTTDaysToKeepHistory" : 14,
+    "BTTTpThreeFingerSwipeSensitivity" : 0.29999999999999999,
+    "showTrackpadTab" : true,
+    "BTTStageManagerSnappingIncreaseAbsolute" : false,
+    "BTTNotchBarStandardWidgetModeHideRightScrollable" : false,
+    "BTTStageManagerLeftGapPercentage" : 0.10000000000000001,
+    "BTTNotchBarStandardMenubarModeHideRightFixed" : false,
+    "BTTFreeSpaceAfterESC" : 10,
+    "BTTNotchBarStandardMenubarModeShowOriginalStatusIcons" : true,
+    "BTTTouchBarUseMonoSpacedFont" : true,
+    "BTTNotchBarNotchWidgetModeHideRightScrollable" : false,
+    "BTTStageManagerLeftSnappingAreaIncrease" : 0,
+    "showOtherTriggersTab" : true,
+    "BSTPreventTopMissionControl" : true,
+    "BTTDrawingsRestoreMousePosition" : true,
+    "singleFingerTapRight" : 0.050000000000000003,
+    "singleFingerTapLeft" : 0.45000000000000001,
+    "BTTDidRegisterForUpdateStats" : "6.503",
+    "BTTHandleThumbsRestingOnTopEdgeAndCorners" : true,
+    "BSTBrokenAPICheckEnabled" : false,
+    "BTTDrawingsHighlightStartPoint" : true,
+    "BSTIncreaseSnappingArea" : true,
+    "BTTShowControlStripItem" : true,
+    "BTTAutoSwitchToOldKeyboardImplementation" : true,
+    "BTTStageManagerLeaveGap" : true,
+    "showNormalMiceTab" : true,
+    "BTTAlwaysShowPresetIndicators" : true,
+    "BTTShowESCWhenControlStripHidden" : true,
+    "BSTDisableSnapAreas" : false,
+    "BTTNotchBarNotchMenubarModeHideRightFixed" : true,
+    "BSTSnapAreaDefaultBackgroundColor" : "129.991390, 201.122858, 227.012328, 104.550000",
+    "BTTScreenshotOpenImgurInBrowser" : true,
+    "BTTForceForceClickPressure5F" : 600,
+    "BTTStageManagerLeftGap" : 0,
+    "BSTSnapAreaDefaultShowPictogram" : false,
+    "BTTFavoriteActions" : {
+      "19" : true
+    },
+    "BSTSnapAreaDefaultPictoDistanceFromBottom" : 0.10000000000000001
+  },
+  "BTTPresetUUID" : "5A452D1C-564A-4F05-8FE2-FDC10DB029FF",
+  "BTTPresetContent" : [
+    {
+      "BTTAppBundleIdentifier" : "com.apple.finder",
+      "BTTAppName" : "Finder",
+      "BTTAppAutoInvertIcon" : 1,
+      "BTTTriggers" : [
+
+      ]
+    },
+    {
+      "BTTAppBundleIdentifier" : "BT.G",
+      "BTTAppName" : "Global",
+      "BTTAppAutoInvertIcon" : 1,
+      "BTTAppSpecificSettings" : {
+        "BTTDisableGlobalTriggers" : false
+      },
+      "BTTTriggers" : [
+        {
+          "BTTLastUpdatedAt" : 1778629002.993732,
+          "BTTTriggerType" : 0,
+          "BTTTriggerClass" : "BTTTriggerTypeKeyboardShortcut",
+          "BTTUUID" : "70B8D38C-19C6-4C0A-837D-EBB7CD6FB4DD",
+          "BTTAdditionalConfiguration" : "1310729",
+          "BTTShortcutKeyboardType" : 211918107,
+          "BTTTriggerOnDown" : 1,
+          "BTTLayoutIndependentChar" : "k",
+          "BTTShortcutKeyCode" : 40,
+          "BTTShortcutAdvancedModifierKeys" : "1310729",
+          "BTTShortcutModifierKeys" : 1310720,
+          "BTTOrder" : 8,
+          "BTTAutoAdaptToKeyboardLayout" : 0,
+          "BTTActionsToExecute" : [
+            {
+              "BTTLastUpdatedAt" : 1778359674.9820309,
+              "BTTTriggerParentUUID" : "70B8D38C-19C6-4C0A-837D-EBB7CD6FB4DD",
+              "BTTIsPureAction" : true,
+              "BTTUUID" : "84C23824-89EB-4CC1-AF9C-1CC8C9FFF4D1",
+              "BTTPredefinedActionType" : 251,
+              "BTTPredefinedActionName" : "Custom Move  or  Resize Window",
+              "BTTActionMoveResizeConfig" : "{\"BTTOriginDisplay\":0,\"BTTChangeYOriginRelative\":0,\"BTTScreenOrigin\":3,\"BTTDirectionToMove\":0,\"BTTChangeHeightRelative\":0,\"BTTNewWindowWidthAbsolute\":1720,\"BTTScreensToMove\":0,\"BTTNewYRelative\":0,\"BTTNewYAbsolute\":40,\"BTTNewXRelative\":0,\"BTTOriginToUse\":3,\"BTTChangeWindowWidth\":true,\"BTTNewXAbsolute\":1720,\"BTTUseVisibleFrame\":false,\"BTTChangeYOrigin\":1,\"BTTCareForStageManager\":false,\"BTTChangeXOriginRelative\":0,\"BTTChangeWidthRelative\":0,\"BTTActiveOrHoveredWindow\":0,\"BTTChangeWindowHeight\":true,\"BTTNewWindowHeightAbsolute\":668,\"BTTChangeXOrigin\":1}",
+              "BTTOrder" : 6
+            }
+          ]
+        },
+        {
+          "BTTLastUpdatedAt" : 1778629002.9938149,
+          "BTTTriggerType" : 0,
+          "BTTTriggerClass" : "BTTTriggerTypeKeyboardShortcut",
+          "BTTUUID" : "688C6B3D-C23B-4C9B-9C93-44207BF3A71E",
+          "BTTAdditionalConfiguration" : "786465",
+          "BTTShortcutKeyboardType" : 211918107,
+          "BTTTriggerOnDown" : 1,
+          "BTTLayoutIndependentChar" : "s",
+          "BTTShortcutKeyCode" : 1,
+          "BTTShortcutAdvancedModifierKeys" : "786465",
+          "BTTShortcutModifierKeys" : 786432,
+          "BTTOrder" : 12,
+          "BTTAutoAdaptToKeyboardLayout" : 0,
+          "BTTActionsToExecute" : [
+            {
+              "BTTLastUpdatedAt" : 1778360279.904655,
+              "BTTTriggerParentUUID" : "688C6B3D-C23B-4C9B-9C93-44207BF3A71E",
+              "BTTIsPureAction" : true,
+              "BTTUUID" : "5BBD4487-4894-4794-907A-7F44B5010C23",
+              "BTTPredefinedActionType" : 251,
+              "BTTPredefinedActionName" : "Custom Move  or  Resize Window",
+              "BTTActionMoveResizeConfig" : "{\"BTTOriginToUse\":0,\"BTTCareForStageManager\":false,\"BTTActiveOrHoveredWindow\":0,\"BTTChangeHeightRelative\":3,\"BTTAddToHeight\":-38,\"BTTOriginDisplay\":0,\"BTTChangeXOriginRelative\":0,\"BTTChangeYOriginRelative\":0,\"BTTUseVisibleFrame\":false,\"BTTHeightChangeUnit\":0,\"BTTScreenOrigin\":0,\"BTTChangeWindowHeight\":true,\"BTTDirectionToMove\":0,\"BTTScreensToMove\":0}",
+              "BTTOrder" : 9
+            }
+          ]
+        },
+        {
+          "BTTLastUpdatedAt" : 1778629002.993742,
+          "BTTTriggerType" : 0,
+          "BTTTriggerClass" : "BTTTriggerTypeKeyboardShortcut",
+          "BTTUUID" : "4FCF1E8C-40B8-4658-8590-C952FE46EEA4",
+          "BTTAdditionalConfiguration" : "786465",
+          "BTTShortcutKeyboardType" : 0,
+          "BTTTriggerOnDown" : 1,
+          "BTTLayoutIndependentChar" : "u",
+          "BTTShortcutKeyCode" : 32,
+          "BTTShortcutAdvancedModifierKeys" : "786465",
+          "BTTShortcutModifierKeys" : 786432,
+          "BTTOrder" : 4,
+          "BTTAutoAdaptToKeyboardLayout" : 0,
+          "BTTActionsToExecute" : [
+            {
+              "BTTLastUpdatedAt" : 1778358270.422487,
+              "BTTTriggerParentUUID" : "4FCF1E8C-40B8-4658-8590-C952FE46EEA4",
+              "BTTIsPureAction" : true,
+              "BTTUUID" : "3AC983A6-76AE-45BD-B863-19765C329214",
+              "BTTPredefinedActionType" : 251,
+              "BTTPredefinedActionName" : "Custom Move  or  Resize Window",
+              "BTTActionMoveResizeConfig" : "{\"BTTOriginDisplay\":0,\"BTTChangeYOriginRelative\":0,\"BTTScreenOrigin\":1,\"BTTDirectionToMove\":0,\"BTTChangeHeightRelative\":0,\"BTTNewWindowWidthAbsolute\":1720,\"BTTScreensToMove\":0,\"BTTNewYRelative\":0,\"BTTNewYAbsolute\":-24,\"BTTNewXRelative\":0,\"BTTOriginToUse\":1,\"BTTChangeWindowWidth\":true,\"BTTNewXAbsolute\":0,\"BTTUseVisibleFrame\":false,\"BTTChangeYOrigin\":1,\"BTTCareForStageManager\":false,\"BTTChangeXOriginRelative\":0,\"BTTChangeWidthRelative\":0,\"BTTActiveOrHoveredWindow\":0,\"BTTChangeWindowHeight\":true,\"BTTNewWindowHeightAbsolute\":708,\"BTTChangeXOrigin\":1}",
+              "BTTActionMoveResizeName" : "\u0019\u000f",
+              "BTTOrder" : 3
+            }
+          ]
+        },
+        {
+          "BTTLastUpdatedAt" : 1778629002.993768,
+          "BTTTriggerType" : 0,
+          "BTTTriggerClass" : "BTTTriggerTypeKeyboardShortcut",
+          "BTTUUID" : "3A6DD98E-DB59-4EB0-AA36-D21424C15E97",
+          "BTTAdditionalConfiguration" : "9175073",
+          "BTTShortcutKeyboardType" : 0,
+          "BTTTriggerOnDown" : 1,
+          "BTTLayoutIndependentChar" : "UP",
+          "BTTShortcutKeyCode" : 126,
+          "BTTShortcutAdvancedModifierKeys" : "9175073",
+          "BTTShortcutModifierKeys" : 9175040,
+          "BTTOrder" : 9,
+          "BTTAutoAdaptToKeyboardLayout" : 0,
+          "BTTActionsToExecute" : [
+            {
+              "BTTLastUpdatedAt" : 1723095512.145046,
+              "BTTTriggerParentUUID" : "3A6DD98E-DB59-4EB0-AA36-D21424C15E97",
+              "BTTIsPureAction" : true,
+              "BTTUUID" : "8248263F-A5A7-4878-B863-45F91B22A341",
+              "BTTPredefinedActionType" : 96,
+              "BTTPredefinedActionName" : "Maximize Window to Top Half",
+              "BTTOrder" : 7
+            }
+          ]
+        },
+        {
+          "BTTLastUpdatedAt" : 1778629002.993773,
+          "BTTTriggerType" : 0,
+          "BTTTriggerClass" : "BTTTriggerTypeKeyboardShortcut",
+          "BTTUUID" : "B762159C-C48A-4BC4-A0EE-148563C85CC2",
+          "BTTAdditionalConfiguration" : "786465",
+          "BTTShortcutKeyboardType" : 0,
+          "BTTTriggerOnDown" : 1,
+          "BTTLayoutIndependentChar" : "j",
+          "BTTShortcutKeyCode" : 38,
+          "BTTShortcutAdvancedModifierKeys" : "786465",
+          "BTTShortcutModifierKeys" : 786432,
+          "BTTOrder" : 6,
+          "BTTAutoAdaptToKeyboardLayout" : 0,
+          "BTTActionsToExecute" : [
+            {
+              "BTTLastUpdatedAt" : 1723095387.8090749,
+              "BTTTriggerParentUUID" : "B762159C-C48A-4BC4-A0EE-148563C85CC2",
+              "BTTIsPureAction" : true,
+              "BTTUUID" : "23E6B58B-9532-4EC0-99C6-42617D601DBA",
+              "BTTPredefinedActionType" : 91,
+              "BTTPredefinedActionName" : "Resize Window to Bottom Left Quarter  or  Corner",
+              "BTTOrder" : 5
+            }
+          ]
+        },
+        {
+          "BTTLastUpdatedAt" : 1778629002.9938102,
+          "BTTTriggerType" : 0,
+          "BTTTriggerClass" : "BTTTriggerTypeKeyboardShortcut",
+          "BTTUUID" : "8C25D32E-61E4-45FE-B918-D74F60603D77",
+          "BTTAdditionalConfiguration" : "9175073",
+          "BTTShortcutKeyboardType" : 0,
+          "BTTTriggerOnDown" : 1,
+          "BTTLayoutIndependentChar" : "DOWN",
+          "BTTShortcutKeyCode" : 125,
+          "BTTShortcutAdvancedModifierKeys" : "9175073",
+          "BTTShortcutModifierKeys" : 9175040,
+          "BTTOrder" : 10,
+          "BTTAutoAdaptToKeyboardLayout" : 0,
+          "BTTActionsToExecute" : [
+            {
+              "BTTLastUpdatedAt" : 1723095527.7699671,
+              "BTTTriggerParentUUID" : "8C25D32E-61E4-45FE-B918-D74F60603D77",
+              "BTTIsPureAction" : true,
+              "BTTUUID" : "DFD24BAE-8845-4B76-944E-F5E742858EBE",
+              "BTTPredefinedActionType" : 95,
+              "BTTPredefinedActionName" : "Maximize Window to Bottom Half",
+              "BTTOrder" : 8
+            }
+          ]
+        },
+        {
+          "BTTLastUpdatedAt" : 1778629002.993778,
+          "BTTTriggerType" : 0,
+          "BTTTriggerClass" : "BTTTriggerTypeKeyboardShortcut",
+          "BTTUUID" : "BC214E46-25F0-40B6-9F2C-912C5F90DF4B",
+          "BTTAdditionalConfiguration" : "786465",
+          "BTTShortcutKeyboardType" : 0,
+          "BTTTriggerOnDown" : 1,
+          "BTTLayoutIndependentChar" : "i",
+          "BTTShortcutKeyCode" : 34,
+          "BTTShortcutAdvancedModifierKeys" : "786465",
+          "BTTShortcutModifierKeys" : 786432,
+          "BTTOrder" : 5,
+          "BTTAutoAdaptToKeyboardLayout" : 0,
+          "BTTActionsToExecute" : [
+            {
+              "BTTLastUpdatedAt" : 1778358431.8974581,
+              "BTTTriggerParentUUID" : "BC214E46-25F0-40B6-9F2C-912C5F90DF4B",
+              "BTTIsPureAction" : true,
+              "BTTUUID" : "2D20D3A4-F581-4F94-BA45-D44B091B1B52",
+              "BTTPredefinedActionType" : 251,
+              "BTTPredefinedActionName" : "Custom Move  or  Resize Window",
+              "BTTActionMoveResizeConfig" : "{\"BTTOriginDisplay\":0,\"BTTChangeYOriginRelative\":0,\"BTTScreenOrigin\":1,\"BTTDirectionToMove\":0,\"BTTChangeHeightRelative\":0,\"BTTNewWindowWidthAbsolute\":1720,\"BTTScreensToMove\":0,\"BTTNewYRelative\":0,\"BTTNewYAbsolute\":-24,\"BTTNewXRelative\":0,\"BTTOriginToUse\":1,\"BTTChangeWindowWidth\":true,\"BTTNewXAbsolute\":1720,\"BTTUseVisibleFrame\":false,\"BTTChangeYOrigin\":1,\"BTTCareForStageManager\":false,\"BTTChangeXOriginRelative\":0,\"BTTChangeWidthRelative\":0,\"BTTActiveOrHoveredWindow\":0,\"BTTChangeWindowHeight\":true,\"BTTNewWindowHeightAbsolute\":708,\"BTTChangeXOrigin\":1}",
+              "BTTOrder" : 4
+            }
+          ]
+        },
+        {
+          "BTTLastUpdatedAt" : 1778629002.993783,
+          "BTTTriggerType" : 0,
+          "BTTTriggerClass" : "BTTTriggerTypeKeyboardShortcut",
+          "BTTUUID" : "A1B35C20-3DFD-4BC4-8642-8E5B2F51A6B4",
+          "BTTAdditionalConfiguration" : "786465",
+          "BTTShortcutKeyboardType" : 0,
+          "BTTTriggerOnDown" : 1,
+          "BTTLayoutIndependentChar" : "k",
+          "BTTShortcutKeyCode" : 40,
+          "BTTShortcutAdvancedModifierKeys" : "786465",
+          "BTTShortcutModifierKeys" : 786432,
+          "BTTOrder" : 7,
+          "BTTAutoAdaptToKeyboardLayout" : 0,
+          "BTTActionsToExecute" : [
+            {
+              "BTTLastUpdatedAt" : 1723095440.4582171,
+              "BTTTriggerParentUUID" : "A1B35C20-3DFD-4BC4-8642-8E5B2F51A6B4",
+              "BTTIsPureAction" : true,
+              "BTTUUID" : "FF5D01E4-4B3E-4D0A-9376-F76293BA3816",
+              "BTTPredefinedActionType" : 93,
+              "BTTPredefinedActionName" : "Resize Window to Bottom Right Quarter  or  Corner",
+              "BTTOrder" : 6
+            }
+          ]
+        },
+        {
+          "BTTLastUpdatedAt" : 1778629002.9938002,
+          "BTTTriggerType" : 0,
+          "BTTTriggerClass" : "BTTTriggerTypeKeyboardShortcut",
+          "BTTUUID" : "B58A2BF2-267E-499E-99FF-1A229DE4DDBE",
+          "BTTAdditionalConfiguration" : "9175073",
+          "BTTShortcutKeyboardType" : 0,
+          "BTTTriggerOnDown" : 1,
+          "BTTLayoutIndependentChar" : "LEFT",
+          "BTTShortcutKeyCode" : 123,
+          "BTTShortcutAdvancedModifierKeys" : "9175073",
+          "BTTShortcutModifierKeys" : 9175040,
+          "BTTOrder" : 0,
+          "BTTAutoAdaptToKeyboardLayout" : 0,
+          "BTTActionsToExecute" : [
+            {
+              "BTTLastUpdatedAt" : 1778357454.3316379,
+              "BTTTriggerType" : 0,
+              "BTTTriggerParentUUID" : "B58A2BF2-267E-499E-99FF-1A229DE4DDBE",
+              "BTTIsPureAction" : true,
+              "BTTUUID" : "A8C7C944-B43C-4313-8B48-C86857D0DC8D",
+              "BTTPredefinedActionType" : 251,
+              "BTTPredefinedActionName" : "Custom Move  or  Resize Window",
+              "BTTActionMoveResizeConfig" : "{\"BTTOriginDisplay\":0,\"BTTChangeYOriginRelative\":0,\"BTTScreenOrigin\":1,\"BTTDirectionToMove\":0,\"BTTChangeHeightRelative\":0,\"BTTNewWindowWidthAbsolute\":1720,\"BTTScreensToMove\":0,\"BTTNewYRelative\":0,\"BTTNewYAbsolute\":-24,\"BTTNewXRelative\":0,\"BTTOriginToUse\":1,\"BTTChangeWindowWidth\":true,\"BTTNewXAbsolute\":0,\"BTTUseVisibleFrame\":false,\"BTTChangeYOrigin\":1,\"BTTCareForStageManager\":false,\"BTTChangeXOriginRelative\":0,\"BTTChangeWidthRelative\":0,\"BTTActiveOrHoveredWindow\":0,\"BTTChangeWindowHeight\":true,\"BTTNewWindowHeightAbsolute\":1416,\"BTTChangeXOrigin\":1}",
+              "BTTAdditionalConfiguration" : "0",
+              "BTTTriggerOnDown" : 0,
+              "BTTLayoutIndependentChar" : "宸",
+              "BTTOrder" : 1,
+              "BTTGestureNotes" : "{{0, 24}, {1720, 1416}}",
+              "BTTTriggerLauncherConfig" : {
+                "BTTLauncherShowInLauncher" : 0
+              }
+            }
+          ]
+        },
+        {
+          "BTTLastUpdatedAt" : 1778629002.9938049,
+          "BTTTriggerType" : 0,
+          "BTTTriggerClass" : "BTTTriggerTypeKeyboardShortcut",
+          "BTTUUID" : "9DDD7755-EC30-4140-8196-66C5B38E64D6",
+          "BTTAdditionalConfiguration" : "9699337",
+          "BTTShortcutKeyboardType" : 211918107,
+          "BTTTriggerOnDown" : 1,
+          "BTTLayoutIndependentChar" : "RIGHT",
+          "BTTShortcutKeyCode" : 124,
+          "BTTShortcutAdvancedModifierKeys" : "9699337",
+          "BTTShortcutModifierKeys" : 9699328,
+          "BTTOrder" : 3,
+          "BTTAutoAdaptToKeyboardLayout" : 0,
+          "BTTActionsToExecute" : [
+            {
+              "BTTLastUpdatedAt" : 1778359723.7905831,
+              "BTTTriggerParentUUID" : "9DDD7755-EC30-4140-8196-66C5B38E64D6",
+              "BTTIsPureAction" : true,
+              "BTTUUID" : "AF35F276-654B-4C98-B477-98A7E6796076",
+              "BTTPredefinedActionType" : 251,
+              "BTTPredefinedActionName" : "Custom Move  or  Resize Window",
+              "BTTActionMoveResizeConfig" : "{\"BTTOriginDisplay\":0,\"BTTChangeYOriginRelative\":0,\"BTTScreenOrigin\":2,\"BTTDirectionToMove\":0,\"BTTChangeHeightRelative\":0,\"BTTNewWindowWidthAbsolute\":1720,\"BTTScreensToMove\":0,\"BTTNewYRelative\":0,\"BTTNewYAbsolute\":-24,\"BTTNewXRelative\":0,\"BTTOriginToUse\":2,\"BTTChangeWindowWidth\":true,\"BTTNewXAbsolute\":0,\"BTTUseVisibleFrame\":false,\"BTTChangeYOrigin\":1,\"BTTCareForStageManager\":false,\"BTTChangeXOriginRelative\":0,\"BTTChangeWidthRelative\":0,\"BTTActiveOrHoveredWindow\":0,\"BTTChangeWindowHeight\":true,\"BTTNewWindowHeightAbsolute\":1375,\"BTTChangeXOrigin\":1}",
+              "BTTOrder" : 2
+            }
+          ]
+        },
+        {
+          "BTTLastUpdatedAt" : 1778629002.993762,
+          "BTTTriggerType" : 0,
+          "BTTTriggerClass" : "BTTTriggerTypeKeyboardShortcut",
+          "BTTUUID" : "3ABF11CE-0EFA-4ABF-9CB4-F4670D74DCE2",
+          "BTTAdditionalConfiguration" : "786465",
+          "BTTShortcutKeyboardType" : 0,
+          "BTTTriggerOnDown" : 1,
+          "BTTLayoutIndependentChar" : "RETURN",
+          "BTTShortcutKeyCode" : 36,
+          "BTTShortcutAdvancedModifierKeys" : "786465",
+          "BTTShortcutModifierKeys" : 786432,
+          "BTTOrder" : 11,
+          "BTTAutoAdaptToKeyboardLayout" : 0,
+          "BTTActionsToExecute" : [
+            {
+              "BTTLastUpdatedAt" : 1778359900.047215,
+              "BTTTriggerParentUUID" : "3ABF11CE-0EFA-4ABF-9CB4-F4670D74DCE2",
+              "BTTIsPureAction" : true,
+              "BTTUUID" : "9088D3DD-6B70-4EF6-96D7-8D341933504F",
+              "BTTPredefinedActionType" : 21,
+              "BTTPredefinedActionName" : "Maximize Window",
+              "BTTOrder" : 9
+            }
+          ]
+        },
+        {
+          "BTTLastUpdatedAt" : 1778629002.99382,
+          "BTTTriggerType" : 0,
+          "BTTTriggerClass" : "BTTTriggerTypeKeyboardShortcut",
+          "BTTUUID" : "5F2A1EA3-E07B-4563-BF60-8DAC0D675A9D",
+          "BTTAdditionalConfiguration" : "9175073",
+          "BTTShortcutKeyboardType" : 0,
+          "BTTTriggerOnDown" : 1,
+          "BTTLayoutIndependentChar" : "RIGHT",
+          "BTTShortcutKeyCode" : 124,
+          "BTTShortcutAdvancedModifierKeys" : "9175073",
+          "BTTShortcutModifierKeys" : 9175040,
+          "BTTOrder" : 2,
+          "BTTAutoAdaptToKeyboardLayout" : 0,
+          "BTTActionsToExecute" : [
+            {
+              "BTTLastUpdatedAt" : 1778357601.1364961,
+              "BTTTriggerParentUUID" : "5F2A1EA3-E07B-4563-BF60-8DAC0D675A9D",
+              "BTTIsPureAction" : true,
+              "BTTUUID" : "BBE04CB0-8261-4EA9-A856-B0C61D251A2B",
+              "BTTPredefinedActionType" : 251,
+              "BTTPredefinedActionName" : "Custom Move  or  Resize Window",
+              "BTTActionMoveResizeConfig" : "{\"BTTOriginDisplay\":0,\"BTTChangeYOriginRelative\":0,\"BTTScreenOrigin\":2,\"BTTDirectionToMove\":0,\"BTTChangeHeightRelative\":0,\"BTTNewWindowWidthAbsolute\":1720,\"BTTScreensToMove\":0,\"BTTNewYRelative\":0,\"BTTNewYAbsolute\":-24,\"BTTNewXRelative\":0,\"BTTOriginToUse\":2,\"BTTChangeWindowWidth\":true,\"BTTNewXAbsolute\":0,\"BTTUseVisibleFrame\":false,\"BTTChangeYOrigin\":1,\"BTTCareForStageManager\":false,\"BTTChangeXOriginRelative\":0,\"BTTChangeWidthRelative\":0,\"BTTActiveOrHoveredWindow\":0,\"BTTChangeWindowHeight\":true,\"BTTNewWindowHeightAbsolute\":1416,\"BTTChangeXOrigin\":1}",
+              "BTTOrder" : 2
+            }
+          ]
+        },
+        {
+          "BTTLastUpdatedAt" : 1778629002.993824,
+          "BTTTriggerType" : 0,
+          "BTTTriggerClass" : "BTTTriggerTypeKeyboardShortcut",
+          "BTTUUID" : "38A0F825-634E-4B35-B3A6-CF65B51E7047",
+          "BTTAdditionalConfiguration" : "786465",
+          "BTTShortcutKeyboardType" : 5609,
+          "BTTTriggerOnDown" : 1,
+          "BTTLayoutIndependentChar" : "r",
+          "BTTShortcutKeyCode" : 15,
+          "BTTShortcutAdvancedModifierKeys" : "786465",
+          "BTTShortcutModifierKeys" : 786432,
+          "BTTOrder" : 13,
+          "BTTAutoAdaptToKeyboardLayout" : 0,
+          "BTTActionsToExecute" : [
+            {
+              "BTTLastUpdatedAt" : 1778359900.047231,
+              "BTTTriggerParentUUID" : "38A0F825-634E-4B35-B3A6-CF65B51E7047",
+              "BTTIsPureAction" : true,
+              "BTTUUID" : "498C0520-28DF-4E55-8CBF-767A1C0A5635",
+              "BTTPredefinedActionType" : 446,
+              "BTTPredefinedActionName" : "Resize Active Window To Specific Position & Size",
+              "BTTGenericActionConfig" : "{{-0, -1}, {1919, 1052}}",
+              "BTTOrder" : 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "BTTAppBundleIdentifier" : "BT.L",
+      "BTTAppName" : "Recently Used",
+      "BTTAppAutoInvertIcon" : 1,
+      "BTTTriggers" : [
+
+      ]
+    }
+  ],
+  "BTTPresetSnapAreas" : [
+    {
+      "BTTDisplayID" : 2,
+      "BTTDisplayIsMain" : 1,
+      "BTTDisplayModel" : 30587,
+      "BTTDisplayResolution" : "{3440, 1440}",
+      "BTTDisplayScreenFrame" : "{{0, 0}, {3440, 1440}}",
+      "BTTDisplayScreenSize" : "{801.61466686003791, 338.66666158040368}",
+      "BTTDisplaySerialNumber" : "431861",
+      "BTTDisplayVendorID" : 7789,
+      "BTTDisplaySnappedDragpoints" : [
+        {
+          "BTTSnapAreaAnimationDuration" : 0.30000001192092896,
+          "BTTSnapAreaPreviewBorderColor" : "0.000000, 0.000000, 0.000000, 255.000000",
+          "BTTSnapAreaColor" : "129.991374, 201.122828, 227.012328, 104.550003",
+          "BTTSnapAreaFrame" : "{{57, 1142}, {400, 130}}",
+          "BTTSnapAreaHighlightColor" : "92.625563, 122.647980, 161.664347, 56.099998",
+          "BTTSnapAreaPictogramDistanceFromLeft" : 0.10000000149011612,
+          "BTTSnapAreaPictogramDistanceFromBottom" : 0.10000000149011612,
+          "BTTSnapAreaPictogramSize" : 0.69999998807907104,
+          "BTTSnapAreaPreviewFrame" : "{{-0, 363}, {1919, 1052}}",
+          "BTTSnapAreaBorderWidth" : 3,
+          "BTTSnapAreaCornerRadius" : 20,
+          "BTTSnapAreaUUID" : "4C90F57A-1709-409B-8841-485CECE0656A",
+          "BTTSnapAreaShowsForApps" : [
+
+          ]
+        }
+      ],
+      "BTTDisplayDisplayedDragpoints" : [
+        {
+          "BTTSnapAreaAnimationDuration" : 0.30000001192092896,
+          "BTTSnapAreaPreviewBorderColor" : "0.000000, 0.000000, 0.000000, 255.000000",
+          "BTTSnapAreaColor" : "129.991374, 201.122828, 227.012328, 104.550003",
+          "BTTSnapAreaFrame" : "{{57, 1142}, {400, 130}}",
+          "BTTSnapAreaHighlightColor" : "92.625563, 122.647980, 161.664347, 56.099998",
+          "BTTSnapAreaPictogramDistanceFromLeft" : 0.10000000149011612,
+          "BTTSnapAreaPictogramDistanceFromBottom" : 0.10000000149011612,
+          "BTTSnapAreaPictogramSize" : 0.69999998807907104,
+          "BTTSnapAreaPreviewFrame" : "{{-0, 363}, {1919, 1052}}",
+          "BTTSnapAreaBorderWidth" : 3,
+          "BTTSnapAreaCornerRadius" : 20,
+          "BTTSnapAreaUUID" : "4C90F57A-1709-409B-8841-485CECE0656A",
+          "BTTSnapAreaShowsForApps" : [
+
+          ]
+        }
+      ]
+    }
+  ]
+}

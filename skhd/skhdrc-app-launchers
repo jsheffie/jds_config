@@ -19,4 +19,6 @@ cmd + ctrl - v : "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" 
 #cmd + ctrl - t : /Applications/Ghostty.app/Contents/MacOS/ghostty +new-window
 #cmd + ctrl - t : osascript -e 'tell application "Ghostty" to activate' -e 'tell application "System Events" to tell process "Ghostty" to keystroke "n" using command down'
 cmd + ctrl - t : osascript -e 'if application "Ghostty" is running then' -e 'tell application "Ghostty" to new window' -e 'tell application "Ghostty" to activate' -e 'else' -e 'tell application "Ghostty" to activate' -e 'end if'
+cmd + ctrl - r : /Users/jds/workspace/jds_config/skhd/ghostty-2up.sh
+cmd + ctrl - y : /Users/jds/workspace/jds_config/skhd/ghostty-4up.sh
 cmd + ctrl - f : osascript -e 'tell application "Finder" to make new Finder window to POSIX file "/Users/jds/Desktop"'
