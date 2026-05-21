@@ -6,21 +6,31 @@ macOS Mission Control enforces a UI limit of 16 spaces per display. Yabai can cr
 
 Bypassing the limit requires partial SIP (System Integrity Protection) disable and the yabai scripting addition installed.
 
+https://github.com/asmvik/yabai/wiki/Disabling-System-Integrity-Protection
+
 ### 1. Disable SIP (partial)
 
 Boot into Recovery Mode (`Command + R` on Intel, hold power button on Apple Silicon), open Terminal, and run:
 
 ```sh
-csrutil enable --without debug --without fs
+# If you're on Apple Silicon macOS 13.x.x OR newer
+# Requires Filesystem Protections, Debugging Restrictions and NVRAM Protection to be disabled
+# (printed warning can be safely ignored)
+csrutil enable --without fs --without debug --without nvram
 ```
 
-Reboot normally after.
+### 1.1 Reboot
+
+### 2. 
+
 
 ### 2. Install and load the scripting addition
 
+https://github.com/asmvik/yabai/wiki/Installing-yabai-(latest-release)
+
 ```sh
-sudo yabai --install-sa
-sudo yabai --load-sa
+#sudo yabai --install-sa
+#sudo yabai --load-sa
 ```
 
 The scripting addition must be reloaded after each macOS update.
