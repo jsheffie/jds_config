@@ -1,7 +1,7 @@
 SKHD_CONFIG := $(HOME)/.config/skhd/skhdrc
 REPO_FILE   := $(shell pwd)/skhdrc
 
-.PHONY: install uninstall fetch reload start stop restart status build-8x2 build-4x4
+.PHONY: install uninstall fetch reload start stop restart status build-8x2 build-4x4 build-8x3
 
 # Simple Keyboard Hotkey Daemon
 
@@ -57,6 +57,9 @@ build-8x2:
 
 build-4x4:
 	cat skhdrc-4-by-4 skhdrc-app-launchers > skhdrc
+
+build-8x3:
+	cat skhdrc-8-by-3 skhdrc-app-launchers > skhdrc
 
 reload8: build-8x2
 	skhd --reload

@@ -46,27 +46,3 @@ ctrl + alt - g : /opt/homebrew/bin/yabai -m space --focus 21
 ctrl + alt - h : /opt/homebrew/bin/yabai -m space --focus 22
 ctrl + alt - j : /opt/homebrew/bin/yabai -m space --focus 23
 ctrl + alt - k : /opt/homebrew/bin/yabai -m space --focus 24
-# === App Launchers ===
-# Chrome profile launcher — cmd+ctrl+c enters chrome mode, then:
-#   d = Default (Person 1)   h = huvrdata.com   t = technicaltoolboxes   esc = cancel
-# cmd + ctrl - c ; chrome
-# chrome < d ; default : "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --profile-directory="Default" --new-window
-# chrome < h ; default : "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --profile-directory="Profile 1" --new-window
-# chrome < t ; default : "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --profile-directory="Profile 5" --new-window
-# chrome < escape ; default :
-
-cmd + ctrl - x : "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --profile-directory="Profile 1" --new-window
-# cmd + ctrl - c : "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --profile-directory="Default" --new-window
-cmd + ctrl - c : "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --profile-directory="Default" --new-window "http://localhost:3001/dailygrind/from_month/05-1-2026"
-cmd + ctrl - v : "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --profile-directory="Profile 5" --new-window
-
-# the -n is opening a new app everytime ( lots of doc icons ) and probably kills all of the efficiency gains Ghostty is giving
-# me in the first place. Use the --new ( or +new-window )
-#cmd + ctrl - t : open -na "Ghostty"
-#cmd + ctrl - t : open -a "Ghostty" --new
-#cmd + ctrl - t : /Applications/Ghostty.app/Contents/MacOS/ghostty +new-window
-#cmd + ctrl - t : osascript -e 'tell application "Ghostty" to activate' -e 'tell application "System Events" to tell process "Ghostty" to keystroke "n" using command down'
-cmd + ctrl - t : osascript -e 'if application "Ghostty" is running then' -e 'tell application "Ghostty" to new window' -e 'tell application "Ghostty" to activate' -e 'else' -e 'tell application "Ghostty" to activate' -e 'end if'
-cmd + ctrl - r : /Users/jds/workspace/jds_config/skhd/ghostty-2up.sh
-cmd + ctrl - y : /Users/jds/workspace/jds_config/skhd/ghostty-4up.sh
-cmd + ctrl - f : osascript -e 'tell application "Finder" to make new Finder window to POSIX file "/Users/jds/Desktop"'
