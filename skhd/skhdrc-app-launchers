@@ -1,3 +1,8 @@
+# === Inital Space Creation ===
+# You have to use yabai to create the 24 spaces
+# yabai -m space --create\n
+# yabai -m query --spaces
+
 # === App Launchers ===
 # Chrome profile launcher — cmd+ctrl+c enters chrome mode, then:
 #   d = Default (Person 1)   h = huvrdata.com   t = technicaltoolboxes   esc = cancel
