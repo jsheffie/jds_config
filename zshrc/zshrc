@@ -36,6 +36,8 @@ alias ccds-start-django='cd ~/workspace/ccds-commonplace-book/commonplace_book &
 alias ccds-start-react='cd ~/workspace/ccds-commonplace-book/frontend && npm start'
 alias tt-claude='cd /Users/jds/workspace/tt-claude-tooling'
 alias gh-claude='cd /Users/jds/workspace/gh-claude'
+alias jds-config='cd /Users/jds/workspace/jds_config'
+alias jds-p-config='cd /Users/jds/workspace/jds_private_config'
 
 
 
