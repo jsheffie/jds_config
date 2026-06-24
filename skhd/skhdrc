@@ -26,26 +26,26 @@ ctrl - 7 : /opt/homebrew/bin/yabai -m space --focus 7
 ctrl - 8 : /opt/homebrew/bin/yabai -m space --focus 8
 
 # Direct jumps: Row 2 (Ctrl+alt+q..i → D9..D16)
-ctrl + alt - q : /opt/homebrew/bin/yabai -m space --focus 9
-# ctrl w is a keystroke for closing chrome window
-ctrl + alt - w : /opt/homebrew/bin/yabai -m space --focus 10
-# ctrl - e is a common (go to end of line keymap)
-ctrl + alt - e : /opt/homebrew/bin/yabai -m space --focus 11
-ctrl + alt - r : /opt/homebrew/bin/yabai -m space --focus 12
-ctrl + alt - t : /opt/homebrew/bin/yabai -m space --focus 13
-ctrl + alt - y : /opt/homebrew/bin/yabai -m space --focus 14
-ctrl + alt - u : /opt/homebrew/bin/yabai -m space --focus 15
-ctrl + alt - i : /opt/homebrew/bin/yabai -m space --focus 16
+# ctrl + alt - q : /opt/homebrew/bin/yabai -m space --focus 9
+# # ctrl w is a keystroke for closing chrome window
+# ctrl + alt - w : /opt/homebrew/bin/yabai -m space --focus 10
+# # ctrl - e is a common (go to end of line keymap)
+# ctrl + alt - e : /opt/homebrew/bin/yabai -m space --focus 11
+# ctrl + alt - r : /opt/homebrew/bin/yabai -m space --focus 12
+# ctrl + alt - t : /opt/homebrew/bin/yabai -m space --focus 13
+# ctrl + alt - y : /opt/homebrew/bin/yabai -m space --focus 14
+# ctrl + alt - u : /opt/homebrew/bin/yabai -m space --focus 15
+# ctrl + alt - i : /opt/homebrew/bin/yabai -m space --focus 16
 
-# Direct jumps: Row 3 (Ctrl+alt+a..k → D17..D24)  (home row, stops before l)
-ctrl + alt - a : /opt/homebrew/bin/yabai -m space --focus 17
-ctrl + alt - s : /opt/homebrew/bin/yabai -m space --focus 18
-ctrl + alt - d : /opt/homebrew/bin/yabai -m space --focus 19
-ctrl + alt - f : /opt/homebrew/bin/yabai -m space --focus 20
-ctrl + alt - g : /opt/homebrew/bin/yabai -m space --focus 21
-ctrl + alt - h : /opt/homebrew/bin/yabai -m space --focus 22
-ctrl + alt - j : /opt/homebrew/bin/yabai -m space --focus 23
-ctrl + alt - k : /opt/homebrew/bin/yabai -m space --focus 24
+# # Direct jumps: Row 3 (Ctrl+alt+a..k → D17..D24)  (home row, stops before l)
+# ctrl + alt - a : /opt/homebrew/bin/yabai -m space --focus 17
+# ctrl + alt - s : /opt/homebrew/bin/yabai -m space --focus 18
+# ctrl + alt - d : /opt/homebrew/bin/yabai -m space --focus 19
+# ctrl + alt - f : /opt/homebrew/bin/yabai -m space --focus 20
+# ctrl + alt - g : /opt/homebrew/bin/yabai -m space --focus 21
+# ctrl + alt - h : /opt/homebrew/bin/yabai -m space --focus 22
+# ctrl + alt - j : /opt/homebrew/bin/yabai -m space --focus 23
+# ctrl + alt - k : /opt/homebrew/bin/yabai -m space --focus 24
 # === App Launchers ===
 # Chrome profile launcher — cmd+ctrl+c enters chrome mode, then:
 #   d = Default (Person 1)   h = huvrdata.com   t = technicaltoolboxes   esc = cancel
