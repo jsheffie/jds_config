@@ -48,7 +48,17 @@ export SAVEHIST=10000
 #export PYTEST_ADDOPTS="--reuse-db --capture=no --verbose"
 #export PYTEST_ADDOPTS='-n 4 --reuse-db --capture=no --verbose -m "not perf"'
 
+
 export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
+
+# >>> grok installer >>>
+export PATH="$HOME/.grok/bin:$PATH"
+fpath=(~/.grok/completions/zsh $fpath)
+autoload -Uz compinit && compinit -C
+# <<< grok installer <<<
+# >>> ruby: Add rbenv to your shell (for zsh) >>>
+eval "$(rbenv init - zsh)"
+# <<< ruby: Add rbenv to your shell (for zsh) <<<
 
 # All the time I want the path of a real file to hand to claude
 cppath() {
@@ -63,64 +73,4 @@ cppath() {
     fi
   }
 
-#  Set iTerm2 tab title to current directory name
-precmd() {
-  #echo -ne "\033]0;${PWD##*/}\007"
-  #echo -ne "\033]0;${PWD}\007"
-  echo -ne "\033]0;$(print -P '%~')\007"
-}
 
-# claudehere() {
-#   local dir="$(basename "$PWD")"
-#   local branch
-#   branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
-#   local session_name="${dir}${branch:+-${branch}}"
-#   claude --resume "$session_name"
-# }
-
-claudehere() {
-  local dir="$(basename "$PWD")"
-  local branch
-  branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
-  local session_name="${dir}${branch:+-${branch}}"
-
-  # Claude stores sessions under ~/.claude/projects/<cwd-with-slashes-as-dashes>/
-  local project_dir="$HOME/.claude/projects/$(pwd | sed 's|/|-|g')"
-  local session_id=""
-  local session_slug=""
-
-  if [[ -d "$project_dir" ]]; then
-    local matched_file
-    matched_file=$(
-      ls -t "$project_dir"/*.jsonl 2>/dev/null | while IFS= read -r f; do
-        if grep -qF "\"cwd\":\"$PWD\"" "$f" && \
-           { [[ -z "$branch" ]] || grep -qF "\"gitBranch\":\"$branch\"" "$f"; }; then
-          echo "$f"
-          break
-        fi
-      done
-    )
-    if [[ -n "$matched_file" ]]; then
-      session_id=$(basename "$matched_file" .jsonl)
-      session_slug=$(grep -o '"customTitle":"[^"]*"' "$matched_file" | head -1 | sed 's/"customTitle":"//;s/"//')
-      [[ -z "$session_slug" ]] && session_slug=$(grep -o '"slug":"[^"]*"' "$matched_file" | head -1 | sed 's/"slug":"//;s/"//')
-    fi
-  fi
-
-  if [[ -n "$session_id" ]]; then
-    echo -n "Resume session '${session_slug:-$session_id}'? (Y/n) "
-    read -r reply </dev/tty
-    if [[ "$reply" == "n" || "$reply" == "N" ]]; then
-      echo "claude --name $session_name"
-      sleep 3
-      claude --name "$session_name" "$@"
-    else
-      echo "claude --resume $session_id"
-      sleep 3
-      claude --resume "$session_id"
-    fi
-  else
-    echo "claude --name $session_name"
-    claude --name "$session_name" "$@"
-  fi
-}
