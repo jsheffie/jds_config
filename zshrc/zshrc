@@ -20,14 +20,11 @@ export PATH="$HOME/bin:$PATH"
 # ghostty
 export PATH=/Applications/Ghostty.app/Contents/MacOS:$PATH
 
-
-
-
 aliases() {
   alias | sort | awk -F"='|'$" '{printf "%-25s %s\n", $1, $2}'
 }
 
-### Aliases
+### them cd aliases, yo
 alias mmtestbed='cd ~/workspace/django-schema-evaluation/django_schematic_many_megan_testbed'
 alias schema='cd ~/workspace/django-schema-evaluation/django-schematic'
 alias schema2='cd ~/workspace/django-schematic2'
@@ -36,19 +33,55 @@ alias ccds-start-django='cd ~/workspace/ccds-commonplace-book/commonplace_book &
 alias ccds-start-react='cd ~/workspace/ccds-commonplace-book/frontend && npm start'
 alias tt-claude='cd /Users/jds/workspace/tt-claude-tooling'
 alias gh-claude='cd /Users/jds/workspace/gh-claude'
-alias jds-config='cd /Users/jds/workspace/jds_config'
-alias jds-p-config='cd /Users/jds/workspace/jds_private_config'
-
+alias jds-conf='cd /Users/jds/workspace/jds_config'
+alias jds-p-conf='cd /Users/jds/workspace/jds_private_config'
+alias no-bs-ts='cd ~/workspace/til/jsheffie/til_p/no-bs-typescript'
+alias til='cd ~/workspace/til/jsheffie/til'
+alias tilp='cd ~/workspace/til/jsheffie/til_p'
+alias tilh='cd ~/workspace/til/jsheffie/til_h'
+alias tila='cd ~/workspace/til/jsheffie/til_art'
 
 
 export HISTSIZE=10000  # Adjust the number to your desired history size
 export SAVEHIST=10000
 
+### them sexy command aliases, yo
+alias cc='claude'                   # plain
+alias ccc='claude --continue'       # resume the last session in this dir
+alias ccr='claude --resume'         # pick a session to resume
+# I do use the: 'git lg' as a pretty git log alias. That's a git subcommand alias
+alias lg='lazygit'
 
+alias neovim='nvim'
+alias ghsv='gh stack view --short'
+alias sz='echo "source ~/.zshrc" && source ~/.zshrc'
+
+#   Optional: stay in the repo you navigated to. Normally, if you change directories inside lazygit 
+#   (for example with its recent-repos menu), your shell is still in the old directory when you quit.
+#   The lazygit README has a snippet that fixes this by moving your shell to wherever lazygit was when you exited:
+#lg() {
+#  export LAZYGIT_NEW_DIR_FILE=~/.lazygit/newdir
+#  lazygit "$@"
+#  if [ -f $LAZYGIT_NEW_DIR_FILE ]; then
+#    cd "$(cat $LAZYGIT_NEW_DIR_FILE)"
+#    rm -f $LAZYGIT_NEW_DIR_FILE > /dev/null
+#  fi
+#}
+#
 #export PYTEST_ADDOPTS="--reuse-db --capture=no --verbose"
 #export PYTEST_ADDOPTS='-n 4 --reuse-db --capture=no --verbose -m "not perf"'
 
+
 export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
+
+# >>> grok installer >>>
+export PATH="$HOME/.grok/bin:$PATH"
+fpath=(~/.grok/completions/zsh $fpath)
+autoload -Uz compinit && compinit -C
+# <<< grok installer <<<
+# >>> ruby: Add rbenv to your shell (for zsh) >>>
+eval "$(rbenv init - zsh)"
+# <<< ruby: Add rbenv to your shell (for zsh) <<<
 
 # All the time I want the path of a real file to hand to claude
 cppath() {
@@ -63,64 +96,9 @@ cppath() {
     fi
   }
 
-#  Set iTerm2 tab title to current directory name
-precmd() {
-  #echo -ne "\033]0;${PWD##*/}\007"
-  #echo -ne "\033]0;${PWD}\007"
-  echo -ne "\033]0;$(print -P '%~')\007"
-}
 
-# claudehere() {
-#   local dir="$(basename "$PWD")"
-#   local branch
-#   branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
-#   local session_name="${dir}${branch:+-${branch}}"
-#   claude --resume "$session_name"
-# }
-
-claudehere() {
-  local dir="$(basename "$PWD")"
-  local branch
-  branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
-  local session_name="${dir}${branch:+-${branch}}"
-
-  # Claude stores sessions under ~/.claude/projects/<cwd-with-slashes-as-dashes>/
-  local project_dir="$HOME/.claude/projects/$(pwd | sed 's|/|-|g')"
-  local session_id=""
-  local session_slug=""
-
-  if [[ -d "$project_dir" ]]; then
-    local matched_file
-    matched_file=$(
-      ls -t "$project_dir"/*.jsonl 2>/dev/null | while IFS= read -r f; do
-        if grep -qF "\"cwd\":\"$PWD\"" "$f" && \
-           { [[ -z "$branch" ]] || grep -qF "\"gitBranch\":\"$branch\"" "$f"; }; then
-          echo "$f"
-          break
-        fi
-      done
-    )
-    if [[ -n "$matched_file" ]]; then
-      session_id=$(basename "$matched_file" .jsonl)
-      session_slug=$(grep -o '"customTitle":"[^"]*"' "$matched_file" | head -1 | sed 's/"customTitle":"//;s/"//')
-      [[ -z "$session_slug" ]] && session_slug=$(grep -o '"slug":"[^"]*"' "$matched_file" | head -1 | sed 's/"slug":"//;s/"//')
-    fi
-  fi
-
-  if [[ -n "$session_id" ]]; then
-    echo -n "Resume session '${session_slug:-$session_id}'? (Y/n) "
-    read -r reply </dev/tty
-    if [[ "$reply" == "n" || "$reply" == "N" ]]; then
-      echo "claude --name $session_name"
-      sleep 3
-      claude --name "$session_name" "$@"
-    else
-      echo "claude --resume $session_id"
-      sleep 3
-      claude --resume "$session_id"
-    fi
-  else
-    echo "claude --name $session_name"
-    claude --name "$session_name" "$@"
-  fi
-}
+# The following lines have been added by Docker Desktop to enable Docker CLI completions.
+fpath=(/Users/jds/.docker/completions $fpath)
+autoload -Uz compinit
+(( ${+_comps[docker]} )) || compinit
+# End of Docker CLI completions
