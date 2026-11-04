@@ -1,0 +1,93 @@
+#!/usr/bin/env bash
+# chrome-profiles — list Chrome profiles from Chrome's "Local State" file.
+#
+# Usage:
+#   chrome-profiles                 table of all profiles (dir, name, email, last-used marker)
+#   chrome-profiles --json          raw JSON array of profiles
+#   chrome-profiles --dir <email>   print only the profile directory for that account
+#   chrome-profiles --dir <name>    ...or matched by display name (case-insensitive)
+#   chrome-profiles --last-used     print the last-used profile directory
+#
+# The profile *directory* ("Default", "Profile 1", ...) is Chrome's stable ID.
+# Pass it to Chrome with:  --profile-directory="Profile 1"
+#
+# Env:
+#   CHROME_LOCAL_STATE  override path to the Local State file (e.g. for Chrome Canary/Chromium)
+
+set -euo pipefail
+
+if ! command -v jq >/dev/null 2>&1; then
+  echo "chrome-profiles: jq is required (brew install jq)" >&2
+  exit 1
+fi
+
+default_state() {
+  case "$(uname -s)" in
+    Darwin) echo "$HOME/Library/Application Support/Google/Chrome/Local State" ;;
+    Linux)  echo "$HOME/.config/google-chrome/Local State" ;;
+    *)      echo "" ;;
+  esac
+}
+
+STATE="${CHROME_LOCAL_STATE:-$(default_state)}"
+
+if [[ -z "$STATE" || ! -r "$STATE" ]]; then
+  echo "chrome-profiles: cannot read Local State at: ${STATE:-<unknown platform>}" >&2
+  echo "  set CHROME_LOCAL_STATE to the correct path" >&2
+  exit 1
+fi
+
+# Normalised JSON array: [{dir,name,email,gaia_name,gaia_id,last_used(bool)}]
+profiles_json() {
+  jq '
+    .profile as $p
+    | ($p.profiles_order // ($p.info_cache | keys)) as $order
+    | [ $order[]
+        | . as $dir
+        | $p.info_cache[$dir]
+        | { dir: $dir,
+            name: (.name // ""),
+            email: (.user_name // ""),
+            gaia_name: (.gaia_name // ""),
+            gaia_id: (.gaia_id // ""),
+            last_used: ($dir == $p.last_used) } ]
+  ' "$STATE"
+}
+
+case "${1:-}" in
+  --json)
+    profiles_json
+    ;;
+  --last-used)
+    jq -r '.profile.last_used' "$STATE"
+    ;;
+  --dir)
+    q="${2:-}"
+    if [[ -z "$q" ]]; then
+      echo "chrome-profiles: --dir requires an email or profile name" >&2
+      exit 2
+    fi
+    dir=$(profiles_json | jq -r --arg q "$q" '
+      map(select((.email | ascii_downcase) == ($q | ascii_downcase)
+              or (.name  | ascii_downcase) == ($q | ascii_downcase)))
+      | .[0].dir // empty')
+    if [[ -z "$dir" ]]; then
+      echo "chrome-profiles: no profile matches '$q'" >&2
+      exit 1
+    fi
+    printf '%s\n' "$dir"
+    ;;
+  -h|--help)
+    sed -n '2,/^$/p' "$0" | sed 's/^# \{0,1\}//'
+    ;;
+  "")
+    {
+      printf 'DIR\tNAME\tEMAIL\tLAST_USED\n'
+      profiles_json | jq -r '.[] | [.dir, .name, .email, (if .last_used then "*" else "" end)] | @tsv'
+    } | column -t -s $'\t'
+    ;;
+  *)
+    echo "chrome-profiles: unknown option '$1' (try --help)" >&2
+    exit 2
+    ;;
+esac
