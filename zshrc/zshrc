@@ -14,8 +14,9 @@ if [ -f '/Users/jds/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/jds/g
 # Claude bin path
 export PATH="$HOME/.local/bin:$PATH"
 
-# Personal scripts
+# Personal scripts: ~/bin for machine-local ones, jds_config/bin for versioned ones
 export PATH="$HOME/bin:$PATH"
+export PATH="$HOME/workspace/jds_config/bin:$PATH"
 
 # ghostty
 export PATH=/Applications/Ghostty.app/Contents/MacOS:$PATH
