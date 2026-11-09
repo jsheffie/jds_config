@@ -1,0 +1,239 @@
+#!/usr/bin/env bash
+# claude-chrome-browser - map Chrome profiles to Claude-in-Chrome device ids.
+#
+# Claude Code only ever sees connected browsers as "Browser 1", "Browser 2", ...
+# The display name set in the extension popup never reaches the CLI, so a
+# session cannot tell the Work profile from the Personal one by name. The
+# deviceId is stable per profile (stored by the extension under
+# "bridgeDeviceId"), so we read it straight out of Chrome's profile data and
+# tell each Claude session which id to select.
+#
+# Usage:
+#   claude-chrome-browser          print the role -> profile -> deviceId table
+#   claude-chrome-browser hook     SessionStart hook: reads hook JSON on stdin,
+#                                  prints routing guidance for that cwd
+#
+# Roles are decided by the Google account signed in to the profile.
+# Work directories are decided by WORK_DIR_PATTERNS. Edit both lists here.
+
+set -euo pipefail
+
+WORK_EMAIL_DOMAIN="huvrdata.com"
+PERSONAL_EMAIL_DOMAIN="gmail.com"
+# Shell globs matched against the session cwd (and its parents).
+WORK_DIR_PATTERNS=(
+  "$HOME/workspace/huvr*"
+  "$HOME/workspace/tt-calc-app*"
+)
+
+mode="${1:-table}"
+
+cwd=""
+if [[ "$mode" == "hook" ]]; then
+  input="$(cat 2>/dev/null || true)"
+  cwd="$(printf '%s' "$input" | python3 -I -c 'import json,sys
+try: print(json.load(sys.stdin).get("cwd",""))
+except Exception: print("")' 2>/dev/null || true)"
+  [[ -z "$cwd" ]] && cwd="$PWD"
+fi
+
+role_for_dir() {
+  local d="$1" p
+  while [[ -n "$d" && "$d" != "/" ]]; do
+    for p in "${WORK_DIR_PATTERNS[@]}"; do
+      # shellcheck disable=SC2053
+      [[ "$d" == $p ]] && { echo work; return; }
+    done
+    d="${d%/*}"
+  done
+  echo personal
+}
+
+role=""
+[[ "$mode" == hook ]] && role="$(role_for_dir "$cwd")"
+export WORK_EMAIL_DOMAIN PERSONAL_EMAIL_DOMAIN CCB_MODE="$mode" CCB_CWD="$cwd" CCB_ROLE="$role"
+
+python3 -I - <<'PY'
+import glob, json, os, re, sys, platform
+
+home = os.path.expanduser("~")
+work_dom = os.environ["WORK_EMAIL_DOMAIN"]
+personal_dom = os.environ["PERSONAL_EMAIL_DOMAIN"]
+mode = os.environ["CCB_MODE"]
+cwd = os.environ["CCB_CWD"]
+want = os.environ["CCB_ROLE"]
+
+if platform.system() == "Darwin":
+    roots = [os.path.join(home, "Library/Application Support/Google/Chrome")]
+else:
+    roots = [os.path.join(home, ".config/google-chrome")]
+
+UUID = r"([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})"
+# Write-ahead logs (*.log) store full keys, so a plain pattern works there.
+LOG_DEVICE_RE = re.compile(rb"bridgeDeviceId.{0,4}\"" + UUID.encode() + rb"\"", re.S)
+LOG_NAME_RE = re.compile(rb"bridgeDisplayName.{0,4}\"([^\"]{1,64})\"", re.S)
+
+# --- minimal leveldb table (*.ldb) reader ---------------------------------
+# Tables prefix-compress keys and usually snappy-compress blocks, so a byte
+# scan misses the key. This decodes just enough to read key/value pairs.
+LDB_MAGIC = bytes.fromhex("57fb808b247547db")
+
+def varint(buf, pos):
+    out = shift = 0
+    while True:
+        b = buf[pos]; pos += 1
+        out |= (b & 0x7F) << shift
+        if not b & 0x80:
+            return out, pos
+        shift += 7
+
+def snappy_decompress(src):
+    _, pos = varint(src, 0)
+    out = bytearray()
+    while pos < len(src):
+        tag = src[pos]; pos += 1
+        kind = tag & 3
+        if kind == 0:
+            n = tag >> 2
+            if n < 60:
+                n += 1
+            else:
+                nb = n - 59
+                n = int.from_bytes(src[pos:pos + nb], "little") + 1
+                pos += nb
+            out += src[pos:pos + n]; pos += n
+            continue
+        if kind == 1:
+            n = ((tag >> 2) & 7) + 4
+            off = ((tag >> 5) << 8) | src[pos]; pos += 1
+        elif kind == 2:
+            n = (tag >> 2) + 1
+            off = int.from_bytes(src[pos:pos + 2], "little"); pos += 2
+        else:
+            n = (tag >> 2) + 1
+            off = int.from_bytes(src[pos:pos + 4], "little"); pos += 4
+        start = len(out) - off
+        for i in range(n):
+            out.append(out[start + i])
+    return bytes(out)
+
+def read_block(data, off, size):
+    raw, kind = data[off:off + size], data[off + size]
+    if kind == 1:
+        return snappy_decompress(raw)
+    if kind == 0:
+        return raw
+    raise ValueError(f"unsupported block compression {kind}")
+
+def block_entries(block):
+    n_restarts = int.from_bytes(block[-4:], "little")
+    end = len(block) - 4 - 4 * n_restarts
+    pos, key = 0, b""
+    while pos < end:
+        shared, pos = varint(block, pos)
+        nonshared, pos = varint(block, pos)
+        vlen, pos = varint(block, pos)
+        key = key[:shared] + block[pos:pos + nonshared]; pos += nonshared
+        yield key, block[pos:pos + vlen]
+        pos += vlen
+
+def ldb_records(data):
+    """Yield (user_key, value) for every entry in a leveldb table file."""
+    if data[-8:] != LDB_MAGIC:
+        raise ValueError("not a leveldb table")
+    footer = data[-48:]
+    _, p = varint(footer, 0); _, p = varint(footer, p)      # metaindex handle
+    ioff, p = varint(footer, p); isize, p = varint(footer, p)
+    for _, handle in block_entries(read_block(data, ioff, isize)):
+        boff, q = varint(handle, 0); bsize, q = varint(handle, q)
+        for key, val in block_entries(read_block(data, boff, bsize)):
+            yield key[:-8], val          # drop the 8-byte sequence/type suffix
+
+def json_str(raw):
+    try:
+        v = json.loads(raw.decode())
+        return v if isinstance(v, str) else ""
+    except Exception:
+        return ""
+
+def extension_values(profile_dir):
+    """Return (device_ids, display_name) stored by the extension in this profile."""
+    ids, names = [], []
+    for store in glob.glob(os.path.join(profile_dir, "Local Extension Settings", "*")):
+        for f in sorted(glob.glob(os.path.join(store, "*"))):
+            if not (f.endswith(".ldb") or f.endswith(".log")):
+                continue
+            try:
+                data = open(f, "rb").read()
+            except OSError:
+                continue
+            if b"bridge" not in data:
+                continue
+            if f.endswith(".log"):
+                ids += [m.decode() for m in LOG_DEVICE_RE.findall(data)]
+                names += [m.decode(errors="replace") for m in LOG_NAME_RE.findall(data)]
+                continue
+            try:
+                for key, val in ldb_records(data):
+                    if key == b"bridgeDeviceId":
+                        v = json_str(val)
+                        if re.fullmatch(UUID, v):
+                            ids.append(v)
+                    elif key == b"bridgeDisplayName":
+                        names.append(json_str(val))
+            except Exception as e:
+                print(f"warning: could not parse {f}: {e}", file=sys.stderr)
+    ids = list(dict.fromkeys(ids))
+    return ids, (names[-1] if names else "")
+
+profiles = []
+for root in roots:
+    state = os.path.join(root, "Local State")
+    if not os.path.exists(state):
+        continue
+    try:
+        cache = json.load(open(state)).get("profile", {}).get("info_cache", {})
+    except Exception:
+        continue
+    for pdir, info in cache.items():
+        email = info.get("user_name", "") or ""
+        dom = email.split("@")[-1].lower() if "@" in email else ""
+        role = "work" if dom == work_dom else "personal" if dom == personal_dom else "other"
+        ids, name = extension_values(os.path.join(root, pdir))
+        profiles.append(dict(role=role, dir=pdir, email=email, name=info.get("name", ""),
+                             ext_name=name, ids=ids))
+
+profiles.sort(key=lambda p: {"work": 0, "personal": 1}.get(p["role"], 2))
+
+if mode != "hook":
+    print(f"{'ROLE':<9} {'PROFILE DIR':<11} {'ACCOUNT':<30} {'DEVICE ID':<36} EXT NAME")
+    for p in profiles:
+        did = ", ".join(p["ids"]) if p["ids"] else "(extension not found)"
+        print(f"{p['role']:<9} {p['dir']:<11} {p['email']:<30} {did:<36} {p['ext_name']}")
+    sys.exit(0)
+
+by_role = {p["role"]: p for p in profiles if p["ids"]}
+chosen = by_role.get(want)
+other = by_role.get("personal" if want == "work" else "work")
+if not chosen:
+    print(f"claude-in-chrome: could not find a Chrome profile with the extension for role '{want}'. "
+          f"Run `claude-chrome-browser` to inspect, and ask the user which browser to use.")
+    sys.exit(0)
+
+lines = [
+    "claude-in-chrome browser routing (claude-chrome-browser SessionStart hook):",
+    f"- This directory ({cwd}) uses the {want.upper()} Chrome profile, signed in as {chosen['email']}.",
+    f"- Before the FIRST browser tool call in this session, call mcp__claude-in-chrome__select_browser "
+    f"with deviceId {chosen['ids'][0]}. Then call tabs_context_mcp as usual.",
+]
+if other:
+    lines.append(f"- The other profile is {other['role'].upper()} ({other['email']}), deviceId {other['ids'][0]}. "
+                 f"Only use it if the user asks.")
+lines += [
+    "- list_connected_browsers names ('Browser N') are meaningless; trust only these deviceIds. "
+    "Never pick a browser whose osPlatform differs from this machine.",
+    "- If browser tools report 'not connected' or 'Receiving end does not exist', stop and ask the user "
+    "to open that Chrome profile and run /chrome -> Reconnect extension. Do not retry blindly.",
+]
+print("\n".join(lines))
+PY

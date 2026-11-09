@@ -21,3 +21,35 @@ Keep this file for knowledge useful to almost every future agent session in this
 Do not repeat what the codebase already shows; point to the authoritative file or command instead.
 Prefer rewriting or pruning existing entries over appending new ones.
 When updating this file, preserve this bar for all agents and keep entries concise.
+
+## Browser work on megan (claude-in-chrome, pr-record)
+
+Chrome profiles here with the Claude extension: `megan:Work` (huvrdata.com
+account; huvr and tt-calc-app, which use Google login) and `megan:Personal`
+(gmail.com account; GitHub is logged in here). Claude Code only sees them as
+"Browser N", and the last selection is a global default shared by every session,
+so never trust names or the current selection.
+
+- Before the first browser tool call, run `claude-chrome-browser`. It prints
+  each profile's role, account, deviceId and extension name. Call
+  `mcp__claude-in-chrome__select_browser` with the matching deviceId: the
+  profile the user named, else Work under `~/workspace/huvr*` and
+  `~/workspace/tt-calc-app*`, else Personal.
+- Never log in or switch Google accounts in the browser; ask the user.
+- On "not connected" / "Receiving end does not exist", stop and ask the user to
+  open that profile and run `/chrome` -> Reconnect extension.
+
+To record a demo for a PR (`pr-record --help` for all options):
+
+    pr-record start --tab <tabId>   # brings that tab to the front, focuses its window, records its region
+    # drive the steps through claude-in-chrome
+    pr-record stop                  # packs; prints ~/Movies/pr-record-<ts>.mp4
+    pr-record attach <PR>           # gh pr comment --attach the last file
+
+- Open the page first and pass its tabId from `tabs_context_mcp`.
+  `--title <page title substring>` also works but can match the user's own tabs. While recording, do not move, resize or cover the window, and do not
+  switch spaces: the capture is a fixed screen region.
+- `attach` posts publicly: confirm with the user first unless they asked for it.
+  Over 10MB only works on paid org repos; re-pack with `--width 960`.
+
+Details and troubleshooting: `~/workspace/jds_config/doc/claude-in-chrome.md`.

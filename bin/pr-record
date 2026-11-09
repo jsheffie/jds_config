@@ -1,0 +1,387 @@
+#!/usr/bin/env bash
+# pr-record - record a short demo video of a browser window for a GitHub PR (macOS).
+#
+# macOS port of lucy's pr-record (jds_config_omarchy), with the same commands
+# and output. yabai finds and focuses the window and the built-in
+# `screencapture -v` records its screen region. It is non-interactive, so a
+# Claude Code session driving Chrome through claude-in-chrome can start it,
+# run the steps, stop it, and attach the result to a PR.
+#
+# Usage:
+#   pr-record start [--tab TABID | --title SUBSTR] [--fullscreen] [--app APP] [--cursor]
+#       Focus the most recently used window of APP (default: Google Chrome)
+#       whose title contains SUBSTR, switching spaces if needed, and start
+#       recording that window's screen region. If no window title matches, the
+#       first Chrome tab whose title contains SUBSTR is made the active tab of
+#       its window first (claude-in-chrome drives background tabs).
+#       --tab TABID (the tabId from claude-in-chrome's tabs_context_mcp) picks
+#       that exact Chrome tab instead, brings it to the front of its window and
+#       records that window. Prefer it: titles can match the user's own tabs.
+#       --fullscreen records the whole display the window is on. screencapture
+#       always records the pointer; --cursor is accepted so lucy's command
+#       lines work unchanged.
+#   pr-record stop [--no-pack]
+#       Stop the recording, then pack it (see below) unless --no-pack.
+#       Prints the path of the finished file.
+#   pr-record pack RAW [OUT.mp4] [--width N] [--keep-idle]
+#       Shrink a recording for GitHub: collapse idle time (frames that do not
+#       change) by about 15x, downscale to N px wide (default 1280), 30 fps,
+#       H.264 yuv420p. --keep-idle leaves the pacing as recorded.
+#   pr-record attach PR [FILE] [-m TEXT] [-- GH_ARGS...]
+#       Comment on PR with FILE attached (default: the last packed file).
+#       Extra args after -- go to `gh pr comment` (e.g. -- -R owner/repo).
+#   pr-record status
+#       Show whether a recording is running and where the last file went.
+#
+# Files land in $PR_RECORD_DIR (default ~/Movies): pr-record-raw-<ts>.mov is
+# the capture, pr-record-<ts>.mp4 is the packed one you attach. GitHub accepts
+# videos up to 10MB on free repos and 100MB on paid org repos.
+#
+# The terminal app running this needs Screen Recording permission (System
+# Settings -> Privacy & Security -> Screen & System Audio Recording). Without
+# it the clip shows only the desktop wallpaper.
+
+set -euo pipefail
+
+OUTPUT_DIR="${PR_RECORD_DIR:-$HOME/Movies}"
+STATE_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/pr-record"
+# Lines: recorder pid, raw file, process group id (recorder + stdin holder).
+RUN_FILE="$STATE_DIR/active"
+LAST_FILE="$STATE_DIR/last"
+LOG_FILE="$STATE_DIR/screencapture.log"
+GITHUB_FREE_LIMIT_MB=10
+STOP_TIMEOUT_S=30
+
+die() {
+  echo "pr-record: $*" >&2
+  exit 1
+}
+
+usage() {
+  sed -n '2,/^$/p' "$0" | sed 's/^# \{0,1\}//'
+  exit "${1:-0}"
+}
+
+need() {
+  local c
+  for c in "$@"; do
+    command -v "$c" >/dev/null || die "$c is required (brew install $c)"
+  done
+}
+
+run_field() {
+  sed -n "${1}p" "$RUN_FILE" 2>/dev/null
+}
+
+# Prints the recorder pid if the run file points at a live screencapture.
+# Checking the command name guards against a recycled pid after a reboot.
+recording_pid() {
+  [[ -f $RUN_FILE ]] || return 1
+  local pid
+  pid=$(run_field 1)
+  [[ -n $pid ]] && kill -0 "$pid" 2>/dev/null || return 1
+  [[ $(ps -o comm= -p "$pid" 2>/dev/null) == *screencapture ]] || return 1
+  echo "$pid"
+}
+
+# Ends the `sleep` that keeps the recorder's stdin open.
+kill_holder() {
+  [[ -n $1 ]] && pkill -TERM -g "$1" -x sleep 2>/dev/null || true
+}
+
+# Prints "id<TAB>x,y,w,h<TAB>title" for the most recently used window of APP
+# whose title contains SUBSTR (or, with a third argument "prefix", starts with
+# it). yabai lists windows most recently used first. Windows whose active tab is
+# in a tab group (Chrome adds " - Part of group " to the title; claude-in-chrome
+# always works in one) win over the rest.
+find_window() {
+  yabai -m query --windows | jq -r --arg a "$1" --arg t "$2" --arg m "${3:-contains}" '
+    def px: round | if . <= 0 then 0 else . end;
+    [.[] | select(.app == $a and ."is-minimized" != true and ."is-hidden" != true
+                  and (if $m == "prefix" then (.title | startswith($t)) else (.title | contains($t)) end))]
+    | (map(select(.title | contains(" - Part of group "))) + .) | .[0] // empty
+    | "\(.id)\t\(.frame.x | px),\(.frame.y | px),\(.frame.w | px),\(.frame.h | px)\t\(.title)"'
+}
+
+# Makes the Chrome tab with this id (claude-in-chrome's tabId is Chrome's tab
+# id) the active tab of its window and prints that tab's title.
+activate_chrome_tab_id() {
+  osascript - "$1" <<'APPLESCRIPT' 2>/dev/null
+on run argv
+  -- Compare as text: tab ids exceed AppleScript's integer range.
+  set wanted to item 1 of argv
+  tell application "Google Chrome"
+    repeat with w in every window
+      set i to 0
+      repeat with t in every tab of w
+        set i to i + 1
+        if ((id of t) as text) is wanted then
+          set active tab index of w to i
+          return title of t
+        end if
+      end repeat
+    end repeat
+  end tell
+  return ""
+end run
+APPLESCRIPT
+}
+
+# Waits up to 2 s for find_window to match (yabai sees title changes a moment
+# after Chrome makes them) and prints the match.
+wait_for_window() {
+  local win=""
+  for _ in $(seq 1 20); do
+    win=$(find_window "$@")
+    [[ -n $win ]] && break
+    sleep 0.1
+  done
+  echo "$win"
+}
+
+# A window's title is its active tab's title, and claude-in-chrome drives its
+# own tab group, usually a background tab of some existing window. Make the
+# first Chrome tab whose title contains SUBSTR the active tab of its window, so
+# that window is found by title and shows the page being driven.
+activate_chrome_tab() {
+  osascript - "$1" <<'APPLESCRIPT' 2>/dev/null
+on run argv
+  set needle to item 1 of argv
+  tell application "Google Chrome"
+    repeat with w in every window
+      set i to 0
+      repeat with t in every tab of w
+        set i to i + 1
+        if title of t contains needle then
+          set active tab index of w to i
+          return "ok"
+        end if
+      end repeat
+    end repeat
+  end tell
+  return ""
+end run
+APPLESCRIPT
+}
+
+# Sets WIN_ID, WIN_TITLE, REGION ("x,y,w,h" in points, what screencapture -R
+# takes) and DISPLAY_INDEX for the window to record: the one holding Chrome tab
+# TAB, else the window of APP whose title contains SUBSTR (bringing a matching
+# Chrome tab to the front first if no window title matches). Then focuses the
+# window, switching spaces if needed, so it is actually on screen.
+focus_window_region() {
+  local app=$1 title=$2 tab=$3 win=""
+  if [[ -n $tab ]]; then
+    local tab_title
+    tab_title=$(activate_chrome_tab_id "$tab")
+    [[ -n $tab_title ]] || die "no Chrome tab with id $tab (take it from tabs_context_mcp)"
+    win=$(wait_for_window "Google Chrome" "$tab_title" prefix)
+    [[ -n $win ]] || die "tab $tab ($tab_title) is active, but yabai shows no window with that title"
+  else
+    win=$(find_window "$app" "$title")
+    if [[ -z $win && $app == "Google Chrome" && -n $title ]] &&
+      [[ $(activate_chrome_tab "$title") == ok ]]; then
+      win=$(wait_for_window "$app" "$title")
+    fi
+    [[ -n $win ]] || die "no window of app \"$app\"${title:+ and no tab with title containing \"$title\"}"
+  fi
+  IFS=$'\t' read -r WIN_ID REGION WIN_TITLE <<<"$win"
+
+  yabai -m window --focus "$WIN_ID" || die "could not focus window $WIN_ID"
+  local state=""
+  for _ in $(seq 1 30); do
+    state=$(yabai -m query --windows --window "$WIN_ID" | jq -r '"\(."has-focus") \(."is-visible") \(.display)"')
+    [[ $state == "true true "* ]] && break
+    sleep 0.1
+  done
+  [[ $state == "true true "* ]] || die "window $WIN_ID did not take focus"
+  DISPLAY_INDEX=${state##* }
+  sleep 0.5 # let a space-switch animation finish before the first frame
+}
+
+cmd_start() {
+  local fullscreen=false app="Google Chrome" title="" tab=""
+  while (($#)); do
+    case $1 in
+    --tab) tab=$2; shift ;;
+    --fullscreen) fullscreen=true ;;
+    --app) app=$2; shift ;;
+    --title) title=$2; shift ;;
+    --cursor) ;;
+    -h | --help) usage ;;
+    *) die "unknown option for start: $1" ;;
+    esac
+    shift
+  done
+
+  need yabai jq
+  recording_pid >/dev/null && die "already recording ($(run_field 2)); run 'pr-record stop' first"
+  [[ -d $OUTPUT_DIR ]] || die "output directory does not exist: $OUTPUT_DIR"
+  mkdir -p "$STATE_DIR"
+
+  [[ -z $tab || $tab =~ ^[0-9]+$ ]] || die "--tab takes a numeric tab id"
+  [[ -z $tab || -z $title ]] || die "use --tab or --title, not both"
+  focus_window_region "$app" "$title" "$tab"
+  local capture
+  if $fullscreen; then
+    capture=(-D "$DISPLAY_INDEX")
+  else
+    capture=(-R "$REGION")
+  fi
+
+  local raw
+  raw="$OUTPUT_DIR/pr-record-raw-$(date +'%Y-%m-%d_%H-%M-%S').mov"
+
+  # screencapture -v stops at the first byte or EOF on stdin, so its stdin is a
+  # pipe from a sleep that never writes. set -m puts the pair in their own
+  # process group, so it outlives this shell and `stop` can find the holder.
+  set -m
+  sleep 2147483647 2>/dev/null |
+    screencapture -x -v "${capture[@]}" "$raw" >"$LOG_FILE" 2>&1 &
+  local pid=$!
+  set +m
+  local pgid
+  pgid=$(ps -o pgid= -p "$pid" | tr -d ' ')
+
+  sleep 1
+  if ! kill -0 "$pid" 2>/dev/null; then
+    kill_holder "$pgid"
+    die "screencapture exited right away; see $LOG_FILE"
+  fi
+
+  printf '%s\n%s\n%s\n' "$pid" "$raw" "$pgid" >"$RUN_FILE"
+  echo "recording window $WIN_ID ($WIN_TITLE) -> $raw"
+}
+
+cmd_stop() {
+  local pack=true
+  while (($#)); do
+    case $1 in
+    --no-pack) pack=false ;;
+    -h | --help) usage ;;
+    *) die "unknown option for stop: $1" ;;
+    esac
+    shift
+  done
+
+  [[ -f $RUN_FILE ]] || die "no recording in progress"
+  local pid raw pgid
+  raw=$(run_field 2)
+  pgid=$(run_field 3)
+  if pid=$(recording_pid); then
+    # SIGINT the recorder alone; it then finalizes the movie. Signalling the
+    # whole group also ends the holder, and screencapture crashes without
+    # writing anything when the EOF lands while it handles SIGINT.
+    kill -INT "$pid"
+    local waited=0
+    while kill -0 "$pid" 2>/dev/null && ((waited < STOP_TIMEOUT_S * 10)); do
+      sleep 0.1
+      waited=$((waited + 1))
+    done
+    if kill -0 "$pid" 2>/dev/null; then
+      kill -9 "$pid" 2>/dev/null || true
+      kill_holder "$pgid"
+      rm -f "$RUN_FILE"
+      die "recorder had to be force-killed; $raw may be corrupt"
+    fi
+  else
+    echo "pr-record: the recorder had already exited; using what it wrote" >&2
+  fi
+  kill_holder "$pgid"
+  rm -f "$RUN_FILE"
+  [[ -s $raw ]] || die "recorder wrote nothing to $raw; see $LOG_FILE"
+
+  if $pack; then
+    cmd_pack "$raw"
+  else
+    echo "$raw" >"$LAST_FILE"
+    echo "$raw"
+  fi
+}
+
+cmd_pack() {
+  local raw="" out="" width=1280 keep_idle=false
+  while (($#)); do
+    case $1 in
+    --width) width=$2; shift ;;
+    --keep-idle) keep_idle=true ;;
+    -h | --help) usage ;;
+    -*) die "unknown option for pack: $1" ;;
+    *) if [[ -z $raw ]]; then raw=$1; elif [[ -z $out ]]; then out=$1; else die "too many arguments"; fi ;;
+    esac
+    shift
+  done
+  need ffmpeg ffprobe
+  [[ -f $raw ]] || die "no such file: ${raw:-(none)}"
+  if [[ -z $out ]]; then
+    local base=${raw##*/}
+    base=${base%.*}
+    out="$(dirname "$raw")/${base/#pr-record-raw-/pr-record-}.mp4"
+    [[ $out != "$raw" ]] || out="$(dirname "$raw")/$base-packed.mp4"
+  fi
+  mkdir -p "$STATE_DIR"
+
+  # fps=30 first: screencapture records at 60 fps. mpdecimate drops frames
+  # identical to the previous one; max=14 keeps every 15th idle frame so pauses
+  # shrink ~15x instead of vanishing. setpts then re-times the survivors back
+  # to a steady 30 fps.
+  local filters="fps=30"
+  $keep_idle || filters="$filters,mpdecimate=max=14,setpts=N/FRAME_RATE/TB"
+  filters="$filters,scale=${width}:-2"
+
+  ffmpeg -y -loglevel error -i "$raw" -vf "$filters" -r 30 \
+    -c:v libx264 -crf 28 -preset slow -pix_fmt yuv420p -movflags +faststart -an "$out"
+
+  echo "$out" >"$LAST_FILE"
+  local bytes mb secs
+  bytes=$(wc -c <"$out" | tr -d ' ')
+  mb=$(awk -v b="$bytes" 'BEGIN { printf "%.1f", b / 1048576 }')
+  secs=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$out" | awk '{ printf "%.1f", $1 }')
+  echo "$out  (${mb}MB, ${secs}s)"
+  if ((bytes > GITHUB_FREE_LIMIT_MB * 1048576)); then
+    echo "pr-record: over ${GITHUB_FREE_LIMIT_MB}MB; fine for a paid org repo, too big for a free one. Try --width 960." >&2
+  fi
+}
+
+cmd_attach() {
+  local pr="" file="" body="Screen recording of the change." gh_args=()
+  while (($#)); do
+    case $1 in
+    -m) body=$2; shift ;;
+    --) shift; gh_args=("$@"); break ;;
+    -h | --help) usage ;;
+    -*) die "unknown option for attach: $1" ;;
+    *) if [[ -z $pr ]]; then pr=$1; elif [[ -z $file ]]; then file=$1; else die "too many arguments"; fi ;;
+    esac
+    shift
+  done
+  [[ -n $pr ]] || die "usage: pr-record attach PR [FILE] [-m TEXT] [-- GH_ARGS...]"
+  [[ -n $file ]] || file=$(cat "$LAST_FILE" 2>/dev/null) || die "no file given and nothing packed yet"
+  [[ -f $file ]] || die "no such file: $file"
+
+  # ${a[@]+...}: bash 3.2 (macOS /bin/bash) treats an empty array as unset under set -u.
+  gh pr comment "$pr" --body "$body" --attach "$file" ${gh_args[@]+"${gh_args[@]}"}
+}
+
+cmd_status() {
+  local pid
+  if pid=$(recording_pid); then
+    echo "recording (pid $pid) -> $(run_field 2)"
+  elif [[ -f $RUN_FILE ]]; then
+    echo "not recording, but the recorder of $(run_field 2) exited on its own; 'pr-record stop' packs what it wrote"
+  else
+    echo "not recording"
+  fi
+  [[ -f $LAST_FILE ]] && echo "last: $(cat "$LAST_FILE")"
+  return 0
+}
+
+case ${1:-} in
+start) shift; cmd_start "$@" ;;
+stop) shift; cmd_stop "$@" ;;
+pack) shift; cmd_pack "$@" ;;
+attach) shift; cmd_attach "$@" ;;
+status) shift; cmd_status "$@" ;;
+-h | --help | "") usage ;;
+*) die "unknown command: $1 (try --help)" ;;
+esac
