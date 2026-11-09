@@ -1,0 +1,112 @@
+#!/usr/bin/env bash
+# gh-notifications-clean - clear GitHub notifications older than N days for a set of repos.
+#
+# Usage:
+#   gh-notifications-clean                      mark as done everything older than 7 days in the default repos
+#   gh-notifications-clean -n                   dry run: list what would be cleared, change nothing
+#   gh-notifications-clean --days 14            keep the last 14 days instead
+#   gh-notifications-clean --read               mark as read instead of done (they stay in the inbox's "read" view)
+#   gh-notifications-clean owner/repo ...       use these repos instead of the defaults
+#
+# Options:
+#   -d, --days N     keep notifications updated within the last N days (default 7)
+#   -n, --dry-run    print what would be cleared and exit
+#   -r, --read       mark as read instead of done
+#   -j, --jobs N     parallel API calls (default 4)
+#   -h, --help       show this help
+#
+# "Done" removes the thread from the inbox (same as the Done button on github.com).
+# A thread comes back if it gets new activity. Age is the thread's updated_at.
+#
+# Env:
+#   GH_NOTIFICATIONS_CLEAN_REPOS  space or comma separated repos, overrides the defaults below
+#
+# Requires: gh (authenticated with the repo or notifications scope), jq
+
+set -euo pipefail
+
+DEFAULT_REPOS=(
+  huvrdata/huvr
+  huvrdata/tt-calc-app
+)
+
+prog=$(basename "$0")
+days=7
+dry_run=0
+mode="done"
+jobs=4
+repos=()
+
+usage() { sed -n '2,/^$/{s/^# \{0,1\}//;p;}' "$0"; }
+die() { echo "$prog: $*" >&2; exit 1; }
+
+while (($#)); do
+  case "$1" in
+    -d|--days)    [[ ${2:-} =~ ^[0-9]+$ ]] || die "--days needs a number"; days=$2; shift 2 ;;
+    -j|--jobs)    [[ ${2:-} =~ ^[1-9][0-9]*$ ]] || die "--jobs needs a positive number"; jobs=$2; shift 2 ;;
+    -n|--dry-run) dry_run=1; shift ;;
+    -r|--read)    mode="read"; shift ;;
+    -h|--help)    usage; exit 0 ;;
+    -*)           die "unknown option: $1 (see --help)" ;;
+    *)            [[ $1 == */* ]] || die "repo must be owner/name: $1"; repos+=("$1"); shift ;;
+  esac
+done
+
+command -v gh >/dev/null 2>&1 || die "gh is required (brew install gh)"
+command -v jq >/dev/null 2>&1 || die "jq is required (brew install jq)"
+
+if ((${#repos[@]} == 0)); then
+  if [[ -n ${GH_NOTIFICATIONS_CLEAN_REPOS:-} ]]; then
+    read -r -a repos <<<"${GH_NOTIFICATIONS_CLEAN_REPOS//,/ }"
+  else
+    repos=("${DEFAULT_REPOS[@]}")
+  fi
+fi
+
+# BSD (macOS) date first, then GNU.
+cutoff=$(date -u -v-"${days}"d +%Y-%m-%dT%H:%M:%SZ 2>/dev/null ||
+         date -u -d "${days} days ago" +%Y-%m-%dT%H:%M:%SZ)
+
+if [[ $mode == "done" ]]; then method=DELETE; verb="marked done"; else method=PATCH; verb="marked read"; fi
+
+echo "Clearing notifications last updated before $cutoff (keeping the last $days days)"
+((dry_run)) && echo "(dry run, nothing will change)"
+
+total=0
+failed=0
+for repo in "${repos[@]}"; do
+  # The API's "before" param does not reliably filter on updated_at, so fetch every
+  # thread for the repo and compare client side. ISO-8601 UTC strings sort correctly.
+  if ! threads=$(gh api --paginate "repos/$repo/notifications?all=true&per_page=50" \
+      --jq ".[] | select(.updated_at < \"$cutoff\") | [.id, .updated_at[:10], .subject.type, .subject.title] | @tsv"); then
+    echo "$repo: failed to list notifications" >&2
+    failed=$((failed + 1))
+    continue
+  fi
+
+  count=0
+  [[ -n $threads ]] && count=$(grep -c '' <<<"$threads")
+  echo "$repo: $count to clear"
+  ((count)) || continue
+
+  if ((dry_run)); then
+    # shellcheck disable=SC2001 # ${var//} is quadratic on bash 3.2 (macOS); sed indents 2k+ lines instantly
+    sed 's/^/  /' <<<"$threads"
+  else
+    # xargs exits non-zero if any call failed; each failure prints its own thread id.
+    # shellcheck disable=SC2016 # $1 is expanded by the inner sh, not here
+    if ! cut -f1 <<<"$threads" |
+        xargs -P "$jobs" -I{} sh -c \
+          'gh api --silent -X '"$method"' "notifications/threads/$1" || { echo "  failed: thread $1" >&2; exit 1; }' _ {}; then
+      failed=$((failed + 1))
+    fi
+  fi
+  total=$((total + count))
+done
+
+if ((dry_run)); then
+  echo "Would have $verb $total notifications."
+else
+  echo "$total notifications $verb."
+fi
+((failed == 0)) || die "some API calls failed (see above)"
