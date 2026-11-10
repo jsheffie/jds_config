@@ -1,0 +1,32 @@
+onboarding = false
+
+[ui.toast]
+delivery = "system"
+
+[[keys.command]]
+key = "prefix+f"
+type = "plugin_action"
+command = "herdr-file-viewer.open-file-viewer"
+description = "open file viewer in split"
+
+[[keys.command]]
+key = "prefix+shift+f"
+type = "plugin_action"
+command = "herdr-file-viewer.open-file-viewer-tab"
+description = "open file viewer in tab"
+
+#[core] pager = delta
+
+[ui]
+status_indicators = "symbols"
+
+# herdr --default-config
+[ui.sidebar.spaces]
+# Blank rows between space entries. Set to 1 to restore the previous spacing.
+# row_gap = 0
+# rows = [["state_icon", "workspace"], ["branch", "git_status"]]
+rows = [["state_icon", "workspace"]]
+
+[theme]
+name = "catppuccin"
+auto_switch = false
