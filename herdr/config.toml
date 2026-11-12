@@ -35,9 +35,13 @@ auto_switch = false
 [ui]
 status_indicators = "symbols"
 
+[ui.sound]
+# Agent state-change sounds off
+enabled = false
+
 [ui.toast]
-# macOS Notification Center
-delivery = "system"
+# In-app herdr toasts only, no macOS Notification Center
+delivery = "herdr"
 
 [ui.sidebar.spaces]
 # rows = [["state_icon", "workspace"], ["branch", "git_status"]]
