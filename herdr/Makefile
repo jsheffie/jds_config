@@ -1,12 +1,14 @@
 # herdr config for this machine.
 #
-#   make install   validate config.toml, back up the live one, install it to ~/.config/herdr
+#   make install   validate config.toml, back up the live one, install it to ~/.config/herdr, reload
+#   make reload    reload config.toml in every running herdr session (default and named)
 #   make plugins   install the herdr plugins the keybindings in config.toml call
 #   make fetch     pull ~/.config/herdr/config.toml back into the repo
 #   make status    show drift between the live config and the repo copy
 #
-# After install, `herdr server reload-config` applies it to the running session
-# and its attached clients without a restart (see README.md in this directory).
+# Each session (`herdr session list`) runs its own server, and
+# `herdr server reload-config` only reaches the default one, so `reload` walks
+# them all. No restart needed (see README.md in this directory).
 
 REPO_DIR    := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 REPO_CONFIG := $(REPO_DIR)config.toml
@@ -15,7 +17,7 @@ CONFIG      := $(HOME)/.config/herdr/config.toml
 # owner/repo@commit, pinned to what megan runs
 PLUGINS := smarzban/herdr-file-viewer@78441da81e63d5fc416ab63fa99d006161595523
 
-.PHONY: install plugins fetch status
+.PHONY: install reload plugins fetch status
 
 # If the live config differs from the repo copy, show the diff and ask first.
 # The previous file is kept as config.toml.bak.<timestamp>.
@@ -39,8 +41,22 @@ install:
 	  echo "Backup: $$backup"; \
 	fi; \
 	cp "$(REPO_CONFIG)" "$(CONFIG)"; \
-	echo "Installed: $(REPO_CONFIG) -> $(CONFIG)"; \
-	echo "Now reload (no restart needed): herdr server reload-config"
+	echo "Installed: $(REPO_CONFIG) -> $(CONFIG)"
+	@$(MAKE) --no-print-directory reload
+
+# Reload every running session, so none keeps the old config. Fails if any
+# reload is not applied.
+reload:
+	@command -v jq >/dev/null || { echo "reload: jq is required" >&2; exit 1; }
+	@sessions="$$(herdr session list --json | jq -r '.sessions[] | select(.running) | .name')"; \
+	[ -n "$$sessions" ] || { echo "reload: no running herdr session"; exit 0; }; \
+	rc=0; \
+	for s in $$sessions; do \
+	  status="$$(herdr --session "$$s" server reload-config | jq -r '.result.status // "error"')"; \
+	  echo "Reloaded $$s: $$status"; \
+	  [ "$$status" = applied ] || rc=1; \
+	done; \
+	exit $$rc
 
 # Idempotent: skips plugins that are already installed.
 plugins:
