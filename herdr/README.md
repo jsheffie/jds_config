@@ -16,7 +16,9 @@ remote attach defaults to `--remote-keybindings local`. With identical `[keys]`
 blocks, the same keys do the same thing on lucy's own keyboard and from megan.
 If you change one, change the other.
 
-The theme and notification settings are megan-only.
+The theme is megan-only. Notifications match lucy: in-app herdr toasts
+(`[ui.toast] delivery = "herdr"`, not macOS Notification Center) and no sound
+(`[ui.sound] enabled = false`).
 
 ## Install
 
@@ -25,12 +27,16 @@ make -C herdr install   # validates with `herdr config check`, shows the diff, a
 make -C herdr plugins   # installs herdr-file-viewer at the pinned commit (idempotent)
 ```
 
-Then reload. **No restart needed**, and panes and agents keep running:
+`install` ends by reloading every running session. To reload without
+installing:
 
 ```sh
-herdr server reload-config                     # default session
-herdr --session personal server reload-config  # each other running session
+make -C herdr reload    # every running session, default and named (e.g. personal)
 ```
+
+**No restart needed**, and panes and agents keep running. Each session in
+`herdr session list` runs its own server, and plain `herdr server reload-config`
+only reaches the default one, so named sessions would keep the old config.
 
 Or press the reload binding inside herdr: `<prefix> shift+r`. In a
 `herdr --remote lucy` window, that in-UI reload is what refreshes this file's
