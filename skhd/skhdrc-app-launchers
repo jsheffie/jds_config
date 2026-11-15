@@ -16,6 +16,8 @@ cmd + ctrl - x : "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" 
 # cmd + ctrl - c : "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --profile-directory="Default" --new-window
 cmd + ctrl - c : "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --profile-directory="Default" --new-window "http://localhost:3001/dailygrind/from_month/05-1-2026"
 cmd + ctrl - v : "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --profile-directory="Profile 5" --new-window
+# megan:Lucy - routes through lucy (WhatsUp remote proxy)
+cmd + ctrl - z : "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --profile-directory="Profile 10" --new-window
 
 # the -n is opening a new app everytime ( lots of doc icons ) and probably kills all of the efficiency gains Ghostty is giving
 # me in the first place. Use the --new ( or +new-window )
