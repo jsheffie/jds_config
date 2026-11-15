@@ -13,7 +13,9 @@
 #   claude-chrome-browser hook     SessionStart hook: reads hook JSON on stdin,
 #                                  prints routing guidance for that cwd
 #
-# Roles are decided by the Google account signed in to the profile.
+# Roles are decided by the Google account signed in to the profile, except
+# "lucy": an unsigned profile whose name ends in ":Lucy" (megan:Lucy), which
+# WhatsUp routes through lucy to open lucy's dev pages.
 # Work directories are decided by WORK_DIR_PATTERNS. Edit both lists here.
 
 set -euo pipefail
@@ -198,12 +200,20 @@ for root in roots:
     for pdir, info in cache.items():
         email = info.get("user_name", "") or ""
         dom = email.split("@")[-1].lower() if "@" in email else ""
-        role = "work" if dom == work_dom else "personal" if dom == personal_dom else "other"
+        name = info.get("name", "") or ""
+        if dom == work_dom:
+            role = "work"
+        elif dom == personal_dom:
+            role = "personal"
+        elif not email and name.lower().endswith(":lucy"):
+            role = "lucy"
+        else:
+            role = "other"
         ids, name = extension_values(os.path.join(root, pdir))
         profiles.append(dict(role=role, dir=pdir, email=email, name=info.get("name", ""),
                              ext_name=name, ids=ids))
 
-profiles.sort(key=lambda p: {"work": 0, "personal": 1}.get(p["role"], 2))
+profiles.sort(key=lambda p: {"work": 0, "personal": 1, "lucy": 2}.get(p["role"], 3))
 
 if mode != "hook":
     print(f"{'ROLE':<9} {'PROFILE DIR':<11} {'ACCOUNT':<30} {'DEVICE ID':<36} EXT NAME")
@@ -229,6 +239,10 @@ lines = [
 if other:
     lines.append(f"- The other profile is {other['role'].upper()} ({other['email']}), deviceId {other['ids'][0]}. "
                  f"Only use it if the user asks.")
+lucy = by_role.get("lucy")
+if lucy:
+    lines.append(f"- The LUCY profile ({lucy['name']}) routes through lucy; deviceId {lucy['ids'][0]}. "
+                 f"Use it only to test pages served by lucy.")
 lines += [
     "- list_connected_browsers names ('Browser N') are meaningless; trust only these deviceIds. "
     "Never pick a browser whose osPlatform differs from this machine.",

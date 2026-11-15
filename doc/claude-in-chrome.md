@@ -28,6 +28,14 @@ Claude Code sessions kept driving the wrong profile, for three reasons:
 3. **Other machines are in the list too.** lucy's browsers show up next to
    megan's.
 
+Roles come from the Google account signed in to each profile, with one
+exception: `megan:Lucy` has no account, and any unsigned profile whose name
+ends in `:Lucy` gets the `lucy` role. WhatsUp's remote proxy extension sends
+all of that profile's traffic through an SSH tunnel to lucy, so it browses
+lucy's dev stacks at their usual `jdsN.local.me` / `localhost` URLs. The hook
+names its deviceId for testing lucy pages; it is never a default. `ctrl + cmd
+- z` (skhd) opens a new window in it.
+
 None of this is configurable per project in Claude Code today.
 
 ## The fix

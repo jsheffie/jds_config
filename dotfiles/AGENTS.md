@@ -25,8 +25,10 @@ When updating this file, preserve this bar for all agents and keep entries conci
 ## Browser work on megan (claude-in-chrome, pr-record)
 
 Chrome profiles here with the Claude extension: `megan:Work` (huvrdata.com
-account; huvr and tt-calc-app, which use Google login) and `megan:Personal`
-(gmail.com account; GitHub is logged in here). Claude Code only sees them as
+account; huvr and tt-calc-app, which use Google login), `megan:Personal`
+(gmail.com account; GitHub is logged in here) and `megan:Lucy` (no account;
+WhatsUp routes all its traffic through lucy, so use it only to test pages
+served by lucy). Claude Code only sees them as
 "Browser N", and the last selection is a global default shared by every session,
 so never trust names or the current selection.
 
