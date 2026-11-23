@@ -46,3 +46,10 @@ delivery = "herdr"
 [ui.sidebar.spaces]
 # rows = [["state_icon", "workspace"], ["branch", "git_status"]]
 rows = [["state_icon", "workspace"]]
+
+[ui.sidebar.agents.rows_by_agent]
+# Claude rows get a middle row with the $step token an agent reports for its own
+# pane, e.g. the mattock implement-both-issue prompt runs
+#   herdr pane report-metadata "$HERDR_PANE_ID" --source mattock --agent claude --token step="4/7 PR open"
+# The other rows are herdr's defaults. Keep this block the same on lucy and megan.
+claude = [["state_icon", "machine", "workspace", "tab"], ["$step"], ["agent"]]
