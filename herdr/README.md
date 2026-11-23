@@ -20,6 +20,19 @@ The theme is megan-only. Notifications match lucy: in-app herdr toasts
 (`[ui.toast] delivery = "herdr"`, not macOS Notification Center) and no sound
 (`[ui.sound] enabled = false`).
 
+## Agent progress row
+
+Claude agents in the sidebar get a middle row showing a `$step` token, so a
+long mattock prompt (`implement-both-issue.md` in jds_config_omarchy) shows
+where it is, e.g. `5/7 waiting on Copilot`. The agent sets it for its own pane:
+
+```sh
+herdr pane report-metadata "$HERDR_PANE_ID" --source mattock --agent claude --token step="4/7 PR open"
+```
+
+The row is empty for agents that never report one. lucy has the same
+`[ui.sidebar.agents.rows_by_agent]` block; keep the two in sync.
+
 ## Install
 
 ```sh
@@ -37,6 +50,11 @@ make -C herdr reload    # every running session, default and named (e.g. persona
 **No restart needed**, and panes and agents keep running. Each session in
 `herdr session list` runs its own server, and plain `herdr server reload-config`
 only reaches the default one, so named sessions would keep the old config.
+
+That reload covers **server** settings only. Theme, sidebar rows and
+keybindings come from each client's own config, so an open herdr window keeps
+the old ones until you press `<prefix> shift+r` in it (the in-UI reload does
+both client and server).
 
 Or press the reload binding inside herdr: `<prefix> shift+r`. In a
 `herdr --remote lucy` window, that in-UI reload is what refreshes this file's

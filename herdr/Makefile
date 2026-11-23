@@ -45,7 +45,8 @@ install:
 	@$(MAKE) --no-print-directory reload
 
 # Reload every running session, so none keeps the old config. Fails if any
-# reload is not applied.
+# reload is not applied. This reloads servers only: client settings (theme,
+# sidebar rows, keybindings) need the in-UI reload in each open window.
 reload:
 	@command -v jq >/dev/null || { echo "reload: jq is required" >&2; exit 1; }
 	@sessions="$$(herdr session list --json | jq -r '.sessions[] | select(.running) | .name')"; \
@@ -56,6 +57,8 @@ reload:
 	  echo "Reloaded $$s: $$status"; \
 	  [ "$$status" = applied ] || rc=1; \
 	done; \
+	echo "Client settings (theme, sidebar rows, keys) are not reloaded by this:"; \
+	echo "press <prefix> shift+r in each open herdr window to pick them up."; \
 	exit $$rc
 
 # Idempotent: skips plugins that are already installed.
